@@ -1,0 +1,78 @@
+﻿<UserControl
+    x:Class="OnlineLibraryWPF.Views.HomeView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:components="clr-namespace:OnlineLibraryWPF.Components"
+    xmlns:converters="clr-namespace:OnlineLibraryWPF.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:OnlineLibraryWPF.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="clr-namespace:OnlineLibraryWPF.ViewModels"
+    d:DataContext="{d:DesignInstance viewmodels:HomeViewModel}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="3*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Grid.Row="0"
+            Style="{StaticResource Header}"
+            Text="Welcome in Online Library by TSevcu" />
+
+        <Grid Grid.Row="1" FocusManager.FocusedElement="{Binding ElementName=LoginName}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="6*" />
+            </Grid.RowDefinitions>
+
+            <TextBlock
+                Grid.Row="1"
+                Margin="20"
+                HorizontalAlignment="Center"
+                Style="{StaticResource DetailTextBlock}"
+                Text="{Binding MessageStore.Message}" />
+
+            <TextBox
+                x:Name="LoginName"
+                Grid.Row="2"
+                Width="200"
+                Margin="2"
+                Text="{Binding LoginName}" />
+
+            <components:BindablePasswordBox
+                Grid.Row="3"
+                Width="200"
+                Margin="2"
+                Password="{Binding Password}" />
+            <Button
+                Grid.Row="4"
+                Margin="2"
+                Command="{Binding LoginCommand}"
+                Content="Login"
+                IsDefault="true"
+                Style="{StaticResource MenuButton}" />
+            <Button
+                Grid.Row="5"
+                Margin="10"
+                Command="{Binding RegisterCommand}"
+                Content="Register"
+                Style="{StaticResource ViewButton}" />
+
+
+        </Grid>
+    </Grid>
+</UserControl>

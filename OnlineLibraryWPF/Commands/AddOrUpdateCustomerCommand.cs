@@ -1,0 +1,104 @@
+﻿using OnlineLibraryWPF.Models;
+using OnlineLibraryWPF.MongoDB;
+using OnlineLibraryWPF.Services;
+using OnlineLibraryWPF.Stores;
+using OnlineLibraryWPF.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using static OnlineLibraryWPF.Services.HashFunction;
+
+namespace OnlineLibraryWPF.Commands
+{
+    public class AddOrUpdateCustomerCommand : AsyncCommandBase
+    {
+        private readonly UsersService _usersService;
+        private readonly MessageStore _messageStore;
+        private readonly INavigationService _closeModalNavigationService;
+        private readonly RegisterViewModel _registerViewModel;
+
+        public AddOrUpdateCustomerCommand(UsersService usersService, 
+                                          MessageStore messageStore, 
+                                          INavigationService closeModalNavigationService, 
+                                          RegisterViewModel registerViewModel)
+        {
+            _usersService = usersService;
+            _messageStore = messageStore;
+            _closeModalNavigationService = closeModalNavigationService;
+            _registerViewModel = registerViewModel;
+        }
+
+        public override async Task ExecuteAsync(object? parameter)
+        {
+            if ((_registerViewModel.LoginName??"").Length < 3)
+            {
+                _messageStore.ModalMessage = "Login name should be atleas 3 characters.";
+                return;
+            }
+            if ((_registerViewModel.Password ?? "").Length < 3)
+            {
+                _messageStore.ModalMessage = "Password should be atleas 3 characters.";
+                return;
+            }
+            if ((_registerViewModel.FirstName ?? "").Length < 1)
+            {
+                _messageStore.ModalMessage = "First name should be atleas 1 characters.";
+                return;
+            }
+            if ((_registerViewModel.LastName ?? "").Length < 1)
+            {
+                _messageStore.ModalMessage = "Last name should be atleas 1 characters.";
+                return;
+            }
+            if ((_registerViewModel.PID ?? "").Length != 10)
+            {
+                _messageStore.ModalMessage = "PID should be 10 characters.";
+                return;
+            }
+            if ((_registerViewModel.Street ?? "").Length < 3)
+            {
+                _messageStore.ModalMessage = "Street should be atleas 3 characters.";
+                return;
+            }
+            if ((_registerViewModel.City ?? "").Length < 1)
+            {
+                _messageStore.ModalMessage = "City should be atleas 1 characters.";
+                return;
+            }
+            if ((_registerViewModel.PostalCode ?? "").Length < 3)
+            {
+                _messageStore.ModalMessage = "Postal code should be atleas 3 characters.";
+                return;
+            }
+            if ((_registerViewModel.Country ?? "").Length < 2)
+            {
+                _messageStore.ModalMessage = "Country should be atleas 2 characters.";
+                return;
+            }
+
+
+            bool userExists = await _usersService.CheckUserWithLoginExists(_registerViewModel.LoginName);
+            if (userExists)
+            {
+                _messageStore.ModalMessage = "User with this login name already exists!";
+                return;
+            }
+
+            Customer customer = new Customer(_registerViewModel.LoginName, 
+                                             HashString(_registerViewModel.Password), 
+                                             _registerViewModel.FirstName, 
+                                             _registerViewModel.LastName, 
+                                             _registerViewModel.PID, 
+                                             new Address(_registerViewModel.Street, _registerViewModel.City, _registerViewModel.PostalCode, _registerViewModel.Country), 
+                                             false);
+
+            await _usersService.CreateAsync(customer);
+
+            _messageStore.Message = "User created!";
+
+            _closeModalNavigationService.Navigate();
+        }
+    }
+}
