@@ -31,7 +31,7 @@ namespace OnlineLibraryWPF.Models
         public int YearPublished { get; set; }
         public byte[] Picture { get; set; } //GridFS
         public int TotalLicences { get; set; }
-        public List<RentedBooks> RentedBooks { get; set; }
+        public virtual List<RentedBooks> RentedBooks { get; set; }
         public int RentedLicences => RentedBooks.Where(o => o.BookReturned == null).Count();
         public int AvaibleLicences => TotalLicences - RentedLicences;
     }

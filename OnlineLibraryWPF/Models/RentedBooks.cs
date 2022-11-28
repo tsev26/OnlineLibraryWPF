@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,6 +19,9 @@ namespace OnlineLibraryWPF.Models
             BookRented = bookRented;
         }
 
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
         public Book Book { get; set; }
         public Customer Customer { get; set; }
         public DateTime BookRented { get; set; }

@@ -6,6 +6,8 @@ using OnlineLibraryWPF.Services;
 using OnlineLibraryWPF.MongoDB;
 using OnlineLibraryWPF.Stores;
 using Microsoft.Extensions.Configuration;
+using System.Windows.Controls;
+using System.Threading.Tasks;
 
 namespace OnlineLibraryWPF
 {
@@ -39,10 +41,13 @@ namespace OnlineLibraryWPF
             services.AddSingleton<CloseModalNavigationService>();
 
             services.AddTransient<HomeViewModel>(CreateHomeViewModel);
-            services.AddTransient<CustomerMenuViewModel>();
-            services.AddTransient<LibrarianMenuViewModel>();
+            services.AddTransient<CustomerMenuViewModel>(CreateCustomerMenuViewModel);
+            services.AddTransient<LibrarianMenuViewModel>(CreateLibrarianMenuViewModel);
             services.AddTransient<RegisterViewModel>(CreateRegisterViewModel);
-            
+            services.AddTransient<RentalsViewModel>();
+            services.AddTransient<BooksViewModel>();
+            services.AddTransient<CustomersViewModel>(CreateCustomersViewModel);
+
 
 
             services.AddTransient<NavigationBarViewModel>(); //CreateNavigationBarViewModel
@@ -80,6 +85,55 @@ namespace OnlineLibraryWPF
                 serviceProvider.GetRequiredService<UsersService>(),
                 serviceProvider.GetRequiredService<MessageStore>()
                 );
+        }
+
+        private LibrarianMenuViewModel CreateLibrarianMenuViewModel(IServiceProvider serviceProvider)
+        {
+            return new LibrarianMenuViewModel(
+                serviceProvider.GetRequiredService<UserStore>(),
+                CreateCustomersNavigationService(serviceProvider),
+                CreateBooksNavigationService(serviceProvider),
+                CreateRentalsNavigationService(serviceProvider),
+                CreateHomeNavigationService(serviceProvider),
+                serviceProvider.GetRequiredService<MessageStore>()
+                );
+        }
+
+        private CustomersViewModel CreateCustomersViewModel(IServiceProvider serviceProvider)
+        {
+            return CustomersViewModel.LoadViewModel(
+                serviceProvider.GetRequiredService<UsersService>(),
+                serviceProvider.GetRequiredService<MessageStore>(),
+                CreateLibrarianMenuNavigationService(serviceProvider));
+        }
+
+        private INavigationService CreateRentalsNavigationService(IServiceProvider serviceProvider)
+        {
+            return new NavigationService<RentalsViewModel>(
+                serviceProvider.GetRequiredService<NavigationStore>(),
+                serviceProvider.GetRequiredService<MessageStore>(),
+                () => serviceProvider.GetRequiredService<RentalsViewModel>());
+        }
+
+        private INavigationService CreateBooksNavigationService(IServiceProvider serviceProvider)
+        {
+            return new NavigationService<BooksViewModel>(
+                serviceProvider.GetRequiredService<NavigationStore>(),
+                serviceProvider.GetRequiredService<MessageStore>(),
+                () => serviceProvider.GetRequiredService<BooksViewModel>());
+        }
+
+        private INavigationService CreateCustomersNavigationService(IServiceProvider serviceProvider)
+        {
+            return new NavigationService<CustomersViewModel>(
+                serviceProvider.GetRequiredService<NavigationStore>(),
+                serviceProvider.GetRequiredService<MessageStore>(),
+                () => serviceProvider.GetRequiredService<CustomersViewModel>());
+        }
+
+        private CustomerMenuViewModel CreateCustomerMenuViewModel(IServiceProvider serviceProvider)
+        {
+            return new CustomerMenuViewModel();
         }
 
         private RegisterViewModel CreateRegisterViewModel(IServiceProvider serviceProvider)

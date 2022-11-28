@@ -32,6 +32,12 @@ namespace OnlineLibraryWPF.MongoDB
         public async Task<User?> GetAsync(string id) =>
             await _usersCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
+        public async Task<List<User>> GetAllCustomersAsync() =>
+            await _usersCollection.Find(Builders<User>.Filter.Eq("_t", "Customer")).ToListAsync();
+
+        public List<User> GetAllCustomers() =>
+             _usersCollection.Find(Builders<User>.Filter.Eq("_t", "Customer")).ToList();
+
         public async Task<User?> GetByLoginAndPassAsync(string login, string password) =>
             await _usersCollection.Find(x => x.LoginName == login && x.Password == password).FirstOrDefaultAsync();
 

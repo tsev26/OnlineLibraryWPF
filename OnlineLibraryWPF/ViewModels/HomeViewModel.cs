@@ -51,7 +51,7 @@ namespace OnlineLibraryWPF.ViewModels
         {
 			MessageStore = messageStore;
             LoginCommand = new LoginCommand(userStore, navigateCustomerCommand, navigateLibrarianCommand, usersService, this);
-			RegisterCommand = new NavigateRegisterCommand(navigateRegisterCommand,this);
+			RegisterCommand = new NavigateCommand(navigateRegisterCommand);
 
             MessageStore.MessageChanged += MessageStore_MessageChanged;
         }

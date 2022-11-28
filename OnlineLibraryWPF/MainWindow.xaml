@@ -29,6 +29,18 @@
                 <views:CustomerMenuView />
             </DataTemplate>
 
+            <DataTemplate DataType="{x:Type viewmodels:CustomersViewModel}">
+                <views:CustomersView />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewmodels:BooksViewModel}">
+                <views:BooksView />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewmodels:RentalsViewModel}">
+                <views:RentalsView />
+            </DataTemplate>
+
 
             <DataTemplate DataType="{x:Type viewmodels:RegisterViewModel}">
                 <views:RegisterView />

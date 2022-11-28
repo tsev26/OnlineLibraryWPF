@@ -39,5 +39,10 @@ namespace OnlineLibraryWPF.Stores
         {
             LoggedUserChanged?.Invoke();
         }
+
+        public void LogoutUser()
+        {
+            LoggedUser = null;
+        }
     }
 }

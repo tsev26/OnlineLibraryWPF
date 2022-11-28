@@ -11,7 +11,63 @@
     d:DesignWidth="800"
     mc:Ignorable="d">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-        <TextBlock Text="Librarian Menu View" />
+        <TextBlock
+            Grid.Row="0"
+            Margin="20"
+            Style="{StaticResource Header}"
+            Text="Librarian MENU" />
+
+        <TextBlock
+            Grid.Row="1"
+            HorizontalAlignment="Center"
+            Style="{StaticResource DetailTextBlock}"
+            Text="There is 5 customers waiting to be approved!" />
+
+        <Grid Grid.Row="2" VerticalAlignment="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+
+            <Button
+                Grid.Row="0"
+                Command="{Binding NavigateRentalsCommand}"
+                Content="Rentals"
+                Style="{StaticResource MenuButton}" />
+            <Button
+                Grid.Row="1"
+                Command="{Binding NavigateBooksCommand}"
+                Content="Books"
+                Style="{StaticResource MenuButton}" />
+            <Button
+                Grid.Row="2"
+                Command="{Binding NavigateCustomersCommand}"
+                Content="Customers"
+                Style="{StaticResource MenuButton}" />
+            <Button
+                Grid.Row="3"
+                Margin="10,40,10,10"
+                Content="Export"
+                Style="{StaticResource ViewButton}" />
+            <Button
+                Grid.Row="4"
+                Content="Import"
+                Style="{StaticResource ViewButton}" />
+            <Button
+                Grid.Row="5"
+                Margin="10,40,10,10"
+                Content="Logout"
+                Style="{StaticResource ViewButton}" />
+        </Grid>
     </Grid>
 </UserControl>

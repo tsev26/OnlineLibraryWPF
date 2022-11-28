@@ -15,5 +15,7 @@ namespace OnlineLibraryWPF.MongoDB
         public string BooksCollectionName { get; set; } = null!;
 
         public string UsersCollectionName { get; set; } = null!;
+
+        public string RentedBooksCollectionName { get; set; } = null!;
     }
 }

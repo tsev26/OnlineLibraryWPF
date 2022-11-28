@@ -45,6 +45,6 @@ namespace OnlineLibraryWPF.Models
         public Address Address { get; set; }
         public bool IsApproved { get; set; }
         public bool IsBanned { get; set; }
-        public List<RentedBooks> RentedBooks { get; set; }
+        public virtual List<RentedBooks> RentedBooks { get; set; }
     }
 }

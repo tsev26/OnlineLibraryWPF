@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OnlineLibraryWPF.Models
 {
-    public class Address
+    public class Address : IComparable
     {
         public Address(string street, string city, string postalCode, string country)
         {
@@ -24,6 +24,25 @@ namespace OnlineLibraryWPF.Models
         public override string ToString()
         {
             return Street + ", " + City + ", " + PostalCode + ", " + Country;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is Address address)
+            {
+                return Street == address.Street && City == address.City && PostalCode == address.PostalCode && Country == address.Country ;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Street, City, PostalCode, Country);
+        }
+
+        public int CompareTo(object? obj)
+        {
+            return this.Equals(obj) ? 0 : -1;
         }
     }
 }
