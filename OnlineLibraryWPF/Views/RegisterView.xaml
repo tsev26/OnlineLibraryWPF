@@ -62,13 +62,15 @@
             Grid.Row="2"
             Grid.Column="0"
             Margin="0,0,8,0"
-            Text="Login Name" />
+            Text="Login Name"
+            Visibility="{Binding LoginNameVisible, Converter={StaticResource bool2VisibilityConverter}}" />
         <TextBox
             x:Name="LoginName"
             Grid.Row="2"
             Grid.Column="1"
             Width="170"
-            Text="{Binding LoginName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            Text="{Binding LoginName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            Visibility="{Binding LoginNameVisible, Converter={StaticResource bool2VisibilityConverter}}" />
 
         <TextBlock
             Grid.Row="3"

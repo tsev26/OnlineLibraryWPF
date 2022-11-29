@@ -18,8 +18,9 @@ namespace OnlineLibraryWPF.Commands
         private readonly MessageStore _messageStore;
         private readonly INavigationService _closeModalNavigationService;
         private readonly RegisterViewModel _registerViewModel;
-
+        private readonly UserStore _userStore;
         public AddOrUpdateCustomerCommand(UsersService usersService, 
+                                          UserStore userStore,
                                           MessageStore messageStore, 
                                           INavigationService closeModalNavigationService, 
                                           RegisterViewModel registerViewModel)
@@ -28,20 +29,12 @@ namespace OnlineLibraryWPF.Commands
             _messageStore = messageStore;
             _closeModalNavigationService = closeModalNavigationService;
             _registerViewModel = registerViewModel;
+            _userStore = userStore;
         }
 
         public override async Task ExecuteAsync(object? parameter)
         {
-            if ((_registerViewModel.LoginName??"").Length < 3)
-            {
-                _messageStore.ModalMessage = "Login name should be atleas 3 characters.";
-                return;
-            }
-            if ((_registerViewModel.Password ?? "").Length < 3)
-            {
-                _messageStore.ModalMessage = "Password should be atleas 3 characters.";
-                return;
-            }
+
             if ((_registerViewModel.FirstName ?? "").Length < 1)
             {
                 _messageStore.ModalMessage = "First name should be atleas 1 characters.";
@@ -78,25 +71,70 @@ namespace OnlineLibraryWPF.Commands
                 return;
             }
 
-
-            bool userExists = await _usersService.CheckUserWithLoginExists(_registerViewModel.LoginName);
-            if (userExists)
+            if (_userStore.Customer == null && !_userStore.IsLoggedInLibrarian)
             {
-                _messageStore.ModalMessage = "User with this login name already exists!";
-                return;
+                if ((_registerViewModel.LoginName ?? "").Length < 3)
+                {
+                    _messageStore.ModalMessage = "Login name should be atleas 3 characters.";
+                    return;
+                }
+                if ((_registerViewModel.Password ?? "").Length < 3)
+                {
+                    _messageStore.ModalMessage = "Password should be atleas 3 characters.";
+                    return;
+                }
+
+                bool userExists = await _usersService.CheckUserWithLoginExists(_registerViewModel.LoginName);
+                if (userExists)
+                {
+                    _messageStore.ModalMessage = "User with this login name already exists!";
+                    return;
+                }
+
+                Customer customer = new Customer(_registerViewModel.LoginName,
+                                                 HashString(_registerViewModel.Password),
+                                                 _registerViewModel.FirstName,
+                                                 _registerViewModel.LastName,
+                                                 _registerViewModel.PID,
+                                                 new Address(_registerViewModel.Street, _registerViewModel.City, _registerViewModel.PostalCode, _registerViewModel.Country),
+                                                 false);
+                await _usersService.CreateAsync(customer);
+
+                _messageStore.Message = "User created!";
+            }
+            else if (_userStore.IsLoggedInCustomer)
+            {
+                string newPassword = _registerViewModel.Password?.Length >= 3 ? HashString(_registerViewModel.Password) : _userStore.Customer.Password;
+
+                User customer = new Customer(_userStore.Customer.LoginName,
+                                                 newPassword,
+                                                 _registerViewModel.FirstName,
+                                                 _registerViewModel.LastName,
+                                                 _registerViewModel.PID,
+                                                 new Address(_registerViewModel.Street, _registerViewModel.City, _registerViewModel.PostalCode, _registerViewModel.Country),
+                                                 false);
+                customer.Id = _userStore.Customer.Id;
+
+                await _usersService.UpdateAsync(_userStore.Customer.Id, customer);
+
+                _messageStore.Message = "User upadated!";
+            }
+            else if (_userStore.IsLoggedInLibrarian)
+            {
+                User customer = new Customer(_registerViewModel.LoginName,
+                                                 HashString(_registerViewModel.Password),
+                                                 _registerViewModel.FirstName,
+                                                 _registerViewModel.LastName,
+                                                 _registerViewModel.PID,
+                                                 new Address(_registerViewModel.Street, _registerViewModel.City, _registerViewModel.PostalCode, _registerViewModel.Country),
+                                                 true);
+
+
+                await _usersService.CreateAsync(customer);
+
+                _messageStore.Message = "User created!";
             }
 
-            Customer customer = new Customer(_registerViewModel.LoginName, 
-                                             HashString(_registerViewModel.Password), 
-                                             _registerViewModel.FirstName, 
-                                             _registerViewModel.LastName, 
-                                             _registerViewModel.PID, 
-                                             new Address(_registerViewModel.Street, _registerViewModel.City, _registerViewModel.PostalCode, _registerViewModel.Country), 
-                                             false);
-
-            await _usersService.CreateAsync(customer);
-
-            _messageStore.Message = "User created!";
 
             _closeModalNavigationService.Navigate();
         }

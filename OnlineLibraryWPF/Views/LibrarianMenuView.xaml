@@ -66,6 +66,7 @@
             <Button
                 Grid.Row="5"
                 Margin="10,40,10,10"
+                Command="{Binding LogoutCommand}"
                 Content="Logout"
                 Style="{StaticResource ViewButton}" />
         </Grid>

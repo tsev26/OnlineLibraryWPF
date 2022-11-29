@@ -10,76 +10,134 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <StackPanel>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
         <TextBlock
-            Margin="20"
+            Grid.Row="0"
+            Margin="0,20,0,0"
             Style="{StaticResource Header}"
             Text="Customers" />
 
-        <DockPanel>
+        <TextBlock
+            Grid.Row="1"
+            Margin="0,0,0,10"
+            HorizontalAlignment="Center"
+            FontSize="15"
+            Foreground="Red"
+            Style="{StaticResource DetailTextBlock}"
+            Text="{Binding MessageStore.Message}" />
 
-            <TextBlock Text="Search:" Margin="20,0,2,0" Style="{StaticResource DetailTextBlock}"/>
+        <DockPanel Grid.Row="2">
+
+            <TextBlock
+                Margin="20,0,2,0"
+                Style="{StaticResource DetailTextBlock}"
+                Text="Search:" />
             <TextBox
                 Width="160"
                 Margin="0,3"
                 HorizontalAlignment="Center"
-                Tag="gffsdgfds"
-                Text="vyhledavani od trech pismen se meni" />
+                Text="{Binding SearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
             <Button
                 Margin="20,0,10,0"
+                Command="{Binding NavigateRegisterCommand}"
                 Content="Add new customer"
                 Style="{StaticResource ViewButton}" />
 
             <Button
                 Margin="1,0"
+                Command="{Binding NavigateEditCommand}"
                 Content="Edit"
                 Style="{StaticResource ViewButton}" />
 
             <Button
                 Margin="1,0"
+                Command="{Binding NavigateRentalsCommand}"
                 Content="View Rented Books"
                 Style="{StaticResource ViewButton}" />
 
             <Button
                 Margin="1,0"
+                Command="{Binding ApproveUserCommand}"
                 Content="Approve"
                 Style="{StaticResource ViewButton}" />
 
             <Button
                 Margin="1,0"
+                Command="{Binding BanUserCommand}"
                 Content="Ban"
                 Style="{StaticResource ViewButton}" />
 
             <Button
+                Margin="0,0,20,0"
                 HorizontalAlignment="Right"
                 HorizontalContentAlignment="Right"
+                Command="{Binding NavigateLibrarianMenuCommand}"
                 Content="Back"
-                Margin="0,0,20,0"
                 Style="{StaticResource ViewButton}" />
 
         </DockPanel>
 
-        <Grid Margin="10">
+        <Grid Grid.Row="3" Margin="10">
             <DataGrid
                 AutoGenerateColumns="false"
                 CanUserReorderColumns="False"
                 CanUserResizeColumns="False"
                 CanUserResizeRows="False"
+                FontSize="14"
+                FontWeight="SemiBold"
                 IsReadOnly="True"
-                ItemsSource="{Binding Customers}"
+                ItemsSource="{Binding Customers, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                SelectedItem="{Binding UserStore.Customer}"
                 SelectionMode="Single">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding LoginName}" Header="Login Name" />
-                    <DataGridTextColumn Binding="{Binding FirstName}" Header="First Name" />
-                    <DataGridTextColumn Binding="{Binding LastName}" Header="Last Name" />
-                    <DataGridTextColumn Binding="{Binding PID}" Header="PID" />
-                    <DataGridTextColumn Binding="{Binding Address}" Header="Address" />
+                    <DataGridTextColumn
+                        Width="auto"
+                        Binding="{Binding LoginName}"
+                        FontSize="13"
+                        Header="Login Name" />
+                    <DataGridTextColumn
+                        Width="auto"
+                        Binding="{Binding FirstName}"
+                        FontSize="13"
+                        Header="First Name" />
+                    <DataGridTextColumn
+                        Width="auto"
+                        Binding="{Binding LastName}"
+                        FontSize="13"
+                        Header="Last Name" />
+                    <DataGridTextColumn
+                        Width="auto"
+                        Binding="{Binding PID}"
+                        FontSize="13"
+                        Header="PID" />
+                    <DataGridTextColumn
+                        Width="*"
+                        Binding="{Binding Address}"
+                        FontSize="13"
+                        Header="Address" />
+                    <DataGridTextColumn
+                        Width="auto"
+                        Binding="{Binding IsApprovedString}"
+                        FontSize="13"
+                        Header="Approved" />
+                    <DataGridTextColumn
+                        Width="auto"
+                        Binding="{Binding IsBannedString}"
+                        FontSize="13"
+                        Header="Banned" />
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
 
 
 
-    </StackPanel>
+    </Grid>
 </UserControl>

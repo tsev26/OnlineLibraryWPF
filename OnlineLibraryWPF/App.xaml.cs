@@ -102,9 +102,12 @@ namespace OnlineLibraryWPF
         private CustomersViewModel CreateCustomersViewModel(IServiceProvider serviceProvider)
         {
             return CustomersViewModel.LoadViewModel(
+                serviceProvider.GetRequiredService<UserStore>(),
                 serviceProvider.GetRequiredService<UsersService>(),
                 serviceProvider.GetRequiredService<MessageStore>(),
-                CreateLibrarianMenuNavigationService(serviceProvider));
+                CreateLibrarianMenuNavigationService(serviceProvider),
+                CreateRegisterNavigationService(serviceProvider),
+                CreateRentalsNavigationService(serviceProvider));
         }
 
         private INavigationService CreateRentalsNavigationService(IServiceProvider serviceProvider)
@@ -138,10 +141,19 @@ namespace OnlineLibraryWPF
 
         private RegisterViewModel CreateRegisterViewModel(IServiceProvider serviceProvider)
         {
-            return new RegisterViewModel(
+            CompositeNavigationService compositeCustomersNavigationService = new CompositeNavigationService(
+                 serviceProvider.GetRequiredService<CloseModalNavigationService>(),
+                 CreateCustomersNavigationService(serviceProvider)
+                 );
+
+
+            return RegisterViewModel.LoadViewModel(
                 serviceProvider.GetRequiredService<UsersService>(),
+                serviceProvider.GetRequiredService<UserStore>(),
                 serviceProvider.GetRequiredService<MessageStore>(),
-                serviceProvider.GetRequiredService<CloseModalNavigationService>());
+                serviceProvider.GetRequiredService<CloseModalNavigationService>(),
+                compositeCustomersNavigationService
+                );
         }
 
         private INavigationService CreateRegisterNavigationService(IServiceProvider serviceProvider)

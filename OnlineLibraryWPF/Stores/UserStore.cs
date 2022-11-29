@@ -28,10 +28,22 @@ namespace OnlineLibraryWPF.Stores
 
         }
 
-        public Customer? Customer => (LoggedUser is Customer customer ? customer : null);
-        public bool IsLoggedInCustomer => Customer != null;
+        private Customer? _customer;
+        public Customer? Customer
+        {
+            get
+            {
+                return (LoggedUser is Customer cus ? cus : _customer);
+            }
+            set
+            {
+                _customer = value;
+            }
+        }
+
+        public bool IsLoggedInCustomer => (LoggedUser is Customer customer ? customer : null) != null;
         public Librarian? Librarian => (LoggedUser is Librarian librarian ? librarian : null);
-        public bool IsLoggedInLibrarian => Librarian != null;
+        public bool IsLoggedInLibrarian => (LoggedUser is Librarian librarian ? librarian : null) != null;
 
 
         public event Action LoggedUserChanged;

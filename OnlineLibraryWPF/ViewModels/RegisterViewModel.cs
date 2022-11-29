@@ -31,6 +31,8 @@ namespace OnlineLibraryWPF.ViewModels
             }
         }
 
+        public bool LoginNameVisible { get; set; }
+
         private string _password;
         public string Password
         {
@@ -151,16 +153,50 @@ namespace OnlineLibraryWPF.ViewModels
 
         public MessageStore MessageStore { get; set; }
 
-        public RegisterViewModel(UsersService usersService, MessageStore messageStore, INavigationService closeModalNavigationService)
+        public RegisterViewModel(UsersService usersService, 
+                                 UserStore userStore, 
+                                 MessageStore messageStore, 
+                                 INavigationService closeModalNavigationService,
+                                 INavigationService closeModalAndReloadCustomersNavigationService)
         {
-            AddOrUpdateCustomerCommand = new AddOrUpdateCustomerCommand(usersService, messageStore, closeModalNavigationService, this);
+            AddOrUpdateCustomerCommand = new AddOrUpdateCustomerCommand(usersService, userStore, messageStore, closeModalAndReloadCustomersNavigationService, this);
             CloseModalCommand = new NavigateCommand(closeModalNavigationService);
-
-
             MessageStore = messageStore;
-            Title = "Register new customer";
-            ButtonName = "Register";
+            
             MessageStore.ModalMessageChanged += MessageStore_ModalMessageChanged;
+        }
+
+        public static RegisterViewModel LoadViewModel(UsersService usersService, 
+                                                      UserStore userStore, 
+                                                      MessageStore messageStore, 
+                                                      INavigationService closeModalNavigationService,
+                                                      INavigationService closeModalAndReloadCustomersNavigationService)
+        {
+            RegisterViewModel view = new RegisterViewModel(usersService, userStore, messageStore, closeModalNavigationService, closeModalAndReloadCustomersNavigationService);
+            
+            if (userStore.Customer != null)
+            {
+                view.FirstName = userStore.Customer.FirstName;
+                view.LastName = userStore.Customer.LastName;
+                view.PID = userStore.Customer.PID;
+                view.Street = userStore.Customer.Address.Street;
+                view.City = userStore.Customer.Address.City;
+                view.PostalCode = userStore.Customer.Address.PostalCode;
+                view.Country = userStore.Customer.Address.Country;
+
+                view.Title = "Edit customer '" + userStore.Customer.LoginName + "'";
+                view.ButtonName = "Edit";
+                view.LoginNameVisible = false;
+            }
+            else
+            {
+                view.Title = "Register new customer";
+                view.ButtonName = "Register";
+                view.LoginNameVisible = true;
+
+            }
+
+            return view;
         }
 
         public override void Dispose()
