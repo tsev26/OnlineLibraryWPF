@@ -1,0 +1,161 @@
+﻿<UserControl
+    x:Class="OnlineLibraryWPF.Views.BookAddEditView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:OnlineLibraryWPF.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:OnlineLibraryWPF.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="clr-namespace:OnlineLibraryWPF.ViewModels"
+    d:Background="White"
+    d:DataContext="{d:DesignInstance viewmodels:BookAddEditViewModel}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <converters:ImageToBitmapSourceConverter x:Key="ImageConverter" />
+    </UserControl.Resources>
+    <Grid
+        MaxWidth="1000"
+        Margin="20"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        FocusManager.FocusedElement="{Binding ElementName=Title}">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="auto" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock
+            Grid.Row="0"
+            Grid.ColumnSpan="2"
+            Margin="0,0,0,5"
+            FontSize="16"
+            Style="{StaticResource Header}"
+            Text="{Binding Title}" />
+
+        <TextBlock
+            Grid.Row="1"
+            Grid.ColumnSpan="2"
+            Margin="0,0,0,5"
+            HorizontalAlignment="Center"
+            FontSize="11"
+            Foreground="Red"
+            Style="{StaticResource DetailTextBlock}"
+            Text="{Binding MessageStore.ModalMessage}" />
+
+        <TextBlock
+            Grid.Row="2"
+            Grid.Column="0"
+            Margin="0,0,8,0"
+            Text="Title" />
+        <TextBox
+            x:Name="Title"
+            Grid.Row="2"
+            Grid.Column="1"
+            Width="170"
+            Text="{Binding BookTitle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <TextBlock
+            Grid.Row="3"
+            Grid.Column="0"
+            Text="Author" />
+        <TextBox
+            Grid.Row="3"
+            Grid.Column="1"
+            Width="170"
+            Text="{Binding Author, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <TextBlock
+            Grid.Row="4"
+            Grid.Column="0"
+            Text="Number Of Pages" />
+        <TextBox
+            Grid.Row="4"
+            Grid.Column="1"
+            Width="170"
+            Text="{Binding NumberOfPages, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <TextBlock
+            Grid.Row="5"
+            Grid.Column="0"
+            Text="Year Published" />
+        <TextBox
+            Grid.Row="5"
+            Grid.Column="1"
+            Width="170"
+            Text="{Binding YearPublished, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <TextBlock
+            Grid.Row="9"
+            Grid.Column="0"
+            Text="Picture" />
+        <Grid Grid.Row="9" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <Image
+                Grid.Column="0"
+                Width="80"
+                Height="110"
+                Source="{Binding Picture, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ImageConverter}}" />
+            <Button
+                Grid.Column="1"
+                Height="30"
+                Command="{Binding SelectImgCommand}"
+                Content="Img"
+                Style="{StaticResource ViewButton}" />
+        </Grid>
+
+
+        <TextBlock
+            Grid.Row="8"
+            Grid.Column="0"
+            Text="TotalLicences" />
+        <TextBox
+            Grid.Row="8"
+            Grid.Column="1"
+            Width="170"
+            Text="{Binding TotalLicences, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+
+        <Button
+            Grid.Row="12"
+            Grid.ColumnSpan="2"
+            MaxWidth="120"
+            Margin="0,10,0,0"
+            Command="{Binding AddOrUpdateBookCommand}"
+            Content="{Binding ButtonName}"
+            IsDefault="True"
+            Style="{StaticResource MenuButton}" />
+
+        <Button
+            Grid.Row="13"
+            Grid.ColumnSpan="2"
+            MaxWidth="80"
+            Margin="0,8,0,0"
+            Command="{Binding CloseModalCommand}"
+            Content="Cancel"
+            FontSize="16"
+            IsCancel="true"
+            Style="{StaticResource MenuButton}" />
+    </Grid>
+</UserControl>

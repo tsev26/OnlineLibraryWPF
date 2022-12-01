@@ -31,6 +31,8 @@ namespace OnlineLibraryWPF
 
             services.AddSingleton<DatabaseSettings>(settings);
             services.AddSingleton<UsersService>();
+            services.AddSingleton<BooksService>();
+            services.AddSingleton<RentedBooksService>();
 
             services.AddSingleton<NavigationStore>();
             services.AddSingleton<ModalNavigationStore>();
@@ -45,7 +47,8 @@ namespace OnlineLibraryWPF
             services.AddTransient<LibrarianMenuViewModel>(CreateLibrarianMenuViewModel);
             services.AddTransient<RegisterViewModel>(CreateRegisterViewModel);
             services.AddTransient<RentalsViewModel>();
-            services.AddTransient<BooksViewModel>();
+            services.AddTransient<BooksViewModel>(CreateBooksViewModel);
+            services.AddTransient<BookAddEditViewModel>(CreateBookAddEditViewModel);
             services.AddTransient<CustomersViewModel>(CreateCustomersViewModel);
 
 
@@ -110,6 +113,19 @@ namespace OnlineLibraryWPF
                 CreateRentalsNavigationService(serviceProvider));
         }
 
+        private BooksViewModel CreateBooksViewModel(IServiceProvider serviceProvider)
+        {
+            return BooksViewModel.LoadViewModel(
+                serviceProvider.GetRequiredService<UserStore>(),
+                serviceProvider.GetRequiredService<BooksService>(),
+                serviceProvider.GetRequiredService<RentedBooksService>(),
+                serviceProvider.GetRequiredService<MessageStore>(),
+                CreateLibrarianMenuNavigationService(serviceProvider),
+                CreateCustomerMenuNavigationService(serviceProvider),
+                CreateRentalsNavigationService(serviceProvider),
+                CreateBookAddEditNavigationService(serviceProvider));
+        }
+
         private INavigationService CreateRentalsNavigationService(IServiceProvider serviceProvider)
         {
             return new NavigationService<RentalsViewModel>(
@@ -156,6 +172,23 @@ namespace OnlineLibraryWPF
                 );
         }
 
+        private BookAddEditViewModel CreateBookAddEditViewModel(IServiceProvider serviceProvider)
+        {
+            CompositeNavigationService compositeBooksNavigationService = new CompositeNavigationService(
+                 serviceProvider.GetRequiredService<CloseModalNavigationService>(),
+                 CreateBooksNavigationService(serviceProvider)
+                 );
+
+
+            return BookAddEditViewModel.LoadViewModel(
+                serviceProvider.GetRequiredService<BooksService>(),
+                serviceProvider.GetRequiredService<MessageStore>(),
+                serviceProvider.GetRequiredService<UserStore>(),
+                serviceProvider.GetRequiredService<CloseModalNavigationService>(),
+                compositeBooksNavigationService
+                );
+        }
+
         private INavigationService CreateRegisterNavigationService(IServiceProvider serviceProvider)
         {
             return new ModalNavigationService<RegisterViewModel>(
@@ -187,5 +220,14 @@ namespace OnlineLibraryWPF
                 serviceProvider.GetRequiredService<MessageStore>(),
                 () => serviceProvider.GetRequiredService<HomeViewModel>());
         }
+
+        private INavigationService CreateBookAddEditNavigationService(IServiceProvider serviceProvider)
+        {
+            return new ModalNavigationService<BookAddEditViewModel>(
+                serviceProvider.GetRequiredService<ModalNavigationStore>(),
+                serviceProvider.GetRequiredService<MessageStore>(),
+                () => serviceProvider.GetRequiredService<BookAddEditViewModel>());
+        }
+
     }
 }

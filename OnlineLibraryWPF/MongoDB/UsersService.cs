@@ -50,12 +50,8 @@ namespace OnlineLibraryWPF.MongoDB
                                     Builders<User>.Filter.Regex("Address.Country", reg)
                                     );
             }
-            return await _usersCollection.Find(filter).ToListAsync();
-
-            
+            return await _usersCollection.Find(filter).ToListAsync(); 
         }
-
-            
 
         public List<User> GetAllCustomers() =>
              _usersCollection.Find(Builders<User>.Filter.Eq("_t", "Customer")).ToList();

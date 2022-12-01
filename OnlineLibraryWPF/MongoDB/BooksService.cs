@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using OnlineLibraryWPF.Models;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace OnlineLibraryWPF.MongoDB
 {
@@ -13,16 +15,16 @@ namespace OnlineLibraryWPF.MongoDB
     {
         private readonly IMongoCollection<Book> _booksCollection;
 
-        public BooksService(IOptions<DatabaseSettings> databaseSettings)
+        public BooksService(DatabaseSettings databaseSettings)
         {
             var mongoClient = new MongoClient(
-                databaseSettings.Value.ConnectionString);
+                databaseSettings.ConnectionString);
 
             var mongoDatabase = mongoClient.GetDatabase(
-                databaseSettings.Value.DatabaseName);
+                databaseSettings.DatabaseName);
 
             _booksCollection = mongoDatabase.GetCollection<Book>(
-                databaseSettings.Value.UsersCollectionName);
+                databaseSettings.BooksCollectionName);
         }
 
         public async Task<List<Book>> GetAsync() =>
@@ -39,6 +41,21 @@ namespace OnlineLibraryWPF.MongoDB
 
         public async Task RemoveAsync(string id) =>
             await _booksCollection.DeleteOneAsync(x => x.Id == id);
+
+        public async Task<List<Book>> GetAllBooksAsync(string searchString, bool onlyAvailable = false)
+        {
+            FilterDefinition<Book> filter = Builders<Book>.Filter.Empty;
+            if (searchString.Length >= 3)
+            {
+                BsonRegularExpression reg = new BsonRegularExpression(searchString, "i");
+                filter &= Builders<Book>.Filter.Or(
+                                    Builders<Book>.Filter.Regex("Title", reg),
+                                    Builders<Book>.Filter.Regex("Author", reg),
+                                    Builders<Book>.Filter.Regex("YearPublished", reg)
+                                    );
+            }
+            return await _booksCollection.Find(filter).ToListAsync();
+        }
     }
 }
 

@@ -13,16 +13,16 @@ namespace OnlineLibraryWPF.MongoDB
     {
         private readonly IMongoCollection<RentedBooks> _rentedBooksCollection;
 
-        public RentedBooksService(IOptions<DatabaseSettings> databaseSettings)
+        public RentedBooksService(DatabaseSettings databaseSettings)
         {
             var mongoClient = new MongoClient(
-                databaseSettings.Value.ConnectionString);
+                databaseSettings.ConnectionString);
 
             var mongoDatabase = mongoClient.GetDatabase(
-                databaseSettings.Value.DatabaseName);
+                databaseSettings.DatabaseName);
 
             _rentedBooksCollection = mongoDatabase.GetCollection<RentedBooks>(
-                databaseSettings.Value.RentedBooksCollectionName);
+                databaseSettings.RentedBooksCollectionName);
         }
 
         public async Task<List<RentedBooks>> GetAsync() =>

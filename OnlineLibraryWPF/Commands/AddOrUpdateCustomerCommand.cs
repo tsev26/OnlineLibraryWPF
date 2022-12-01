@@ -136,7 +136,7 @@ namespace OnlineLibraryWPF.Commands
             }
 
 
-            _closeModalNavigationService.Navigate();
+            _closeModalNavigationService.Navigate(_messageStore.Message);
         }
     }
 }

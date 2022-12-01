@@ -41,6 +41,19 @@ namespace OnlineLibraryWPF.Stores
             }
         }
 
+        private Book? _book;
+        public Book? Book
+        {
+            get
+            {
+                return _book;
+            }
+            set
+            {
+                _book = value;
+            }
+        }
+
         public bool IsLoggedInCustomer => (LoggedUser is Customer customer ? customer : null) != null;
         public Librarian? Librarian => (LoggedUser is Librarian librarian ? librarian : null);
         public bool IsLoggedInLibrarian => (LoggedUser is Librarian librarian ? librarian : null) != null;
@@ -54,6 +67,7 @@ namespace OnlineLibraryWPF.Stores
 
         public void LogoutUser()
         {
+            Book = null;
             LoggedUser = null;
         }
     }
