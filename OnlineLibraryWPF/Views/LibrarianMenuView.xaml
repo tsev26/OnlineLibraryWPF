@@ -27,7 +27,7 @@
             Grid.Row="1"
             HorizontalAlignment="Center"
             Style="{StaticResource DetailTextBlock}"
-            Text="There is 5 customers waiting to be approved!" />
+            Text="{Binding MessageStore.Message, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <Grid Grid.Row="2" VerticalAlignment="Center">
             <Grid.RowDefinitions>

@@ -43,6 +43,8 @@ namespace OnlineLibraryWPF.ViewModels
             }
         }
 
+        public bool IsCustomerSelected => UserStore.Customer != null;
+
         public CustomersViewModel(UserStore userStore, 
                                   UsersService usersService, 
                                   MessageStore messageStore, 
@@ -62,11 +64,18 @@ namespace OnlineLibraryWPF.ViewModels
             LoadCustomersCommand = new LoadCustomersCommand(this, usersService);
 
             MessageStore.MessageChanged += MessageStore_MessageChanged;
+            UserStore.CustomerChanged += UserStore_CustomerChanged;
+        }
+
+        private void UserStore_CustomerChanged()
+        {
+            OnPropertyChanged(nameof(IsCustomerSelected));
         }
 
         public override void Dispose()
         {
-            MessageStore.MessageChanged -= MessageStore_MessageChanged;
+            MessageStore.MessageChanged -= MessageStore_MessageChanged; 
+            UserStore.CustomerChanged -= UserStore_CustomerChanged;
             base.Dispose();
         }
 

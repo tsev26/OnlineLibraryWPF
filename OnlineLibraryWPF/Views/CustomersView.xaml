@@ -10,6 +10,9 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -55,25 +58,29 @@
                 Margin="1,0"
                 Command="{Binding NavigateEditCommand}"
                 Content="Edit"
-                Style="{StaticResource ViewButton}" />
+                Style="{StaticResource ViewButton}"
+                Visibility="{Binding IsCustomerSelected, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
             <Button
                 Margin="1,0"
                 Command="{Binding NavigateRentalsCommand}"
                 Content="View Rented Books"
-                Style="{StaticResource ViewButton}" />
+                Style="{StaticResource ViewButton}"
+                Visibility="{Binding IsCustomerSelected, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
             <Button
                 Margin="1,0"
                 Command="{Binding ApproveUserCommand}"
                 Content="Approve"
-                Style="{StaticResource ViewButton}" />
+                Style="{StaticResource ViewButton}"
+                Visibility="{Binding IsCustomerSelected, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
             <Button
                 Margin="1,0"
                 Command="{Binding BanUserCommand}"
                 Content="Ban"
-                Style="{StaticResource ViewButton}" />
+                Style="{StaticResource ViewButton}"
+                Visibility="{Binding IsCustomerSelected, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
             <Button
                 Margin="0,0,20,0"

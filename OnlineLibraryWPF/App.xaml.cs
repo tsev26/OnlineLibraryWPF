@@ -92,13 +92,14 @@ namespace OnlineLibraryWPF
 
         private LibrarianMenuViewModel CreateLibrarianMenuViewModel(IServiceProvider serviceProvider)
         {
-            return new LibrarianMenuViewModel(
+            return LibrarianMenuViewModel.LoadViewModel(
                 serviceProvider.GetRequiredService<UserStore>(),
                 CreateCustomersNavigationService(serviceProvider),
                 CreateBooksNavigationService(serviceProvider),
                 CreateRentalsNavigationService(serviceProvider),
                 CreateHomeNavigationService(serviceProvider),
-                serviceProvider.GetRequiredService<MessageStore>()
+                serviceProvider.GetRequiredService<MessageStore>(),
+                serviceProvider.GetRequiredService<UsersService>()
                 );
         }
 
@@ -152,7 +153,14 @@ namespace OnlineLibraryWPF
 
         private CustomerMenuViewModel CreateCustomerMenuViewModel(IServiceProvider serviceProvider)
         {
-            return new CustomerMenuViewModel();
+            return CustomerMenuViewModel.LoadViewModel(
+                serviceProvider.GetRequiredService<UserStore>(),
+                serviceProvider.GetRequiredService<MessageStore>(),
+                serviceProvider.GetRequiredService<UsersService>(),
+                CreateHomeNavigationService(serviceProvider),
+                CreateBooksNavigationService(serviceProvider),
+                CreateRentalsNavigationService(serviceProvider),
+                CreateRegisterNavigationService(serviceProvider));
         }
 
         private RegisterViewModel CreateRegisterViewModel(IServiceProvider serviceProvider)

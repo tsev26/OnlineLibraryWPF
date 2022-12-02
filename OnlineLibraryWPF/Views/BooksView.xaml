@@ -47,6 +47,7 @@
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
@@ -76,26 +77,34 @@
                 Command="{Binding NavigateEditBookCommand}"
                 Content="Edit"
                 Style="{StaticResource ViewButton}"
-                Visibility="{Binding UserStore.IsLoggedInLibrarian, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                Visibility="{Binding IsBookSelectedForLibrarian, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
             <Button
                 Grid.Column="4"
                 Margin="1,0"
-                Command="{Binding NavigateRentalsCommand}"
-                Content="View Rented Books"
+                Command="{Binding DeleteBookCommand}"
+                Content="Delete"
                 Style="{StaticResource ViewButton}"
-                Visibility="{Binding UserStore.IsLoggedInLibrarian, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                Visibility="{Binding IsBookSelectedForLibrarian, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
             <Button
                 Grid.Column="5"
                 Margin="1,0"
-                Command="{Binding RentBookCommand}"
-                Content="Rent"
+                Command="{Binding NavigateRentalsCommand}"
+                Content="View Rented Books"
                 Style="{StaticResource ViewButton}"
-                Visibility="{Binding UserStore.IsLoggedInCustomer, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                Visibility="{Binding IsBookSelectedForLibrarian, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
             <Button
                 Grid.Column="6"
+                Margin="1,0"
+                Command="{Binding RentBookCommand}"
+                Content="Rent"
+                Style="{StaticResource ViewButton}"
+                Visibility="{Binding IsBookSelectedForCustomer, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+            <Button
+                Grid.Column="7"
                 Margin="0,0,20,0"
                 HorizontalAlignment="Right"
                 HorizontalContentAlignment="Right"
@@ -105,7 +114,7 @@
                 Visibility="{Binding UserStore.IsLoggedInLibrarian, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
             <Button
-                Grid.Column="6"
+                Grid.Column="7"
                 Margin="0,0,20,0"
                 HorizontalAlignment="Right"
                 HorizontalContentAlignment="Right"
@@ -129,9 +138,7 @@
                 SelectedItem="{Binding UserStore.Book}"
                 SelectionMode="Single">
                 <DataGrid.Columns>
-                    <DataGridTextColumn
-                        Width="60"
-                        Header="Picture">
+                    <DataGridTextColumn Width="60" Header="Picture">
                         <DataGridTextColumn.CellStyle>
                             <Style TargetType="DataGridCell">
                                 <Setter Property="Template">

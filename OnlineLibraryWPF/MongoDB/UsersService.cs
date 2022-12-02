@@ -90,5 +90,32 @@ namespace OnlineLibraryWPF.MongoDB
             UpdateDefinition<User> update = Builders<User>.Update.Set("IsApproved", value);
             await _usersCollection.UpdateOneAsync(filter, update);
         }
+
+        public async Task<long> GetNumberOfUnapprovedCustomersAsync()
+        {
+            FilterDefinition<User> filter = Builders<User>.Filter.Eq("_t", "Customer") & Builders<User>.Filter.Eq("IsApproved", false);
+            return await _usersCollection.CountDocumentsAsync(filter);
+        }
+
+        public async Task<long> GetNumberOfRentalsCustomerAsync(string? id)
+        {
+            FilterDefinition<User> filter = Builders<User>.Filter.Eq(x => x.Id, id); 
+            ProjectionDefinition<User> projection = Builders<User>.Projection.Include("RentedBooks").Exclude("_id");
+
+            AggregateCountResult result = await _usersCollection.Aggregate()
+                            .Match(filter)
+                            .Project(projection)
+                            .Unwind("RentedBooks")
+                            .Count()
+                            .FirstOrDefaultAsync();
+
+            long count = 0;
+            if (result != null)
+            {
+                count = result.Count;
+            }
+
+            return count;
+        }
     }
 }

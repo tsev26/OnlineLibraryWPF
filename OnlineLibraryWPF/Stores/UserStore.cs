@@ -38,6 +38,7 @@ namespace OnlineLibraryWPF.Stores
             set
             {
                 _customer = value;
+                OnCustomerChanged();
             }
         }
 
@@ -51,6 +52,7 @@ namespace OnlineLibraryWPF.Stores
             set
             {
                 _book = value;
+                OnBookChanged();
             }
         }
 
@@ -65,10 +67,23 @@ namespace OnlineLibraryWPF.Stores
             LoggedUserChanged?.Invoke();
         }
 
+        public event Action CustomerChanged;
+        private void OnCustomerChanged()
+        {
+            CustomerChanged?.Invoke();
+        }
+
+        public event Action BookChanged;
+        private void OnBookChanged()
+        {
+            BookChanged?.Invoke();
+        }
+
         public void LogoutUser()
         {
             Book = null;
             LoggedUser = null;
+            Customer = null;
         }
     }
 }

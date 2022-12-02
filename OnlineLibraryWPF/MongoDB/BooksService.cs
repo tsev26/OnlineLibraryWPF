@@ -56,6 +56,27 @@ namespace OnlineLibraryWPF.MongoDB
             }
             return await _booksCollection.Find(filter).ToListAsync();
         }
+
+        public async Task<bool> CheckIfRented(string id)
+        {
+            FilterDefinition<Book> filter = Builders<Book>.Filter.Eq(x => x.Id, id);
+            ProjectionDefinition<Book> projection = Builders<Book>.Projection.Include("RentedBooks").Exclude("_id");
+
+            AggregateCountResult result = await _booksCollection.Aggregate()
+                            .Match(filter)
+                            .Project(projection)
+                            .Unwind("RentedBooks")
+                            .Count()
+                            .FirstOrDefaultAsync();
+
+            long count = 0;
+            if (result != null)
+            {
+                count = result.Count;
+            }           
+
+            return count > 0;
+        }
     }
 }
 

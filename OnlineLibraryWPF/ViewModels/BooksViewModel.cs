@@ -24,6 +24,8 @@ namespace OnlineLibraryWPF.ViewModels
         public ICommand RentBookCommand { get; }
         public ICommand LoadBooksCommand { get; }
 
+        public ICommand DeleteBookCommand { get; }
+
         public bool IsLoading { get; set; }
         public UserStore UserStore { get; set; }
         public MessageStore MessageStore { get; set; }
@@ -44,6 +46,12 @@ namespace OnlineLibraryWPF.ViewModels
             }
         }
 
+        public bool IsBookSelected => UserStore.Book != null;
+
+        public bool IsBookSelectedForLibrarian => IsBookSelected && UserStore.IsLoggedInLibrarian;
+
+        public bool IsBookSelectedForCustomer => IsBookSelected && UserStore.IsLoggedInCustomer;
+
         public BooksViewModel(UserStore userStore,
                               BooksService booksService,
                               RentedBooksService rentedBooksService,
@@ -58,18 +66,28 @@ namespace OnlineLibraryWPF.ViewModels
 
             NavigateLibrarianMenuCommand = new NavigateCommand(navigateLibrarianCommand);
             NavigateCustomerMenuCommand = new NavigateCommand(navigateCustomerMenuCommand);
-            NavigateAddBookCommand = new NavigateAddBookCommand(navigateAddUpdateBookCommand, UserStore);
+            NavigateAddBookCommand = new NavigateAddBookCommand(navigateAddUpdateBookCommand, userStore);
             NavigateEditBookCommand = new NavigateCommand(navigateAddUpdateBookCommand);
             NavigateRentalsCommand = new NavigateCommand(navigateRentalsCommand);
             RentBookCommand = new RentBookCommand(rentedBooksService);
             LoadBooksCommand = new LoadBooksCommand(this, booksService);
+            DeleteBookCommand = new DeleteBookCommand(booksService, userStore, messageStore, this);
 
             MessageStore.MessageChanged += MessageStore_MessageChanged;
+            UserStore.BookChanged += UserStore_BookChanged;
+        }
+
+        private void UserStore_BookChanged()
+        {
+            OnPropertyChanged(nameof(IsBookSelected));
+            OnPropertyChanged(nameof(IsBookSelectedForCustomer));
+            OnPropertyChanged(nameof(IsBookSelectedForLibrarian));
         }
 
         public override void Dispose()
         {
             MessageStore.MessageChanged -= MessageStore_MessageChanged;
+            UserStore.BookChanged -= UserStore_BookChanged;
             base.Dispose();
         }
 
