@@ -39,6 +39,19 @@ namespace OnlineLibraryWPF.ViewModels
             LoadInfoAbouCustomersCommand = new LoadInfoAbouCustomersCommand(usersService, messageStore);
             ExportCommand = new ExportCommand();
             ImportCommand = new ImportCommand();
+
+            MessageStore.MessageChanged += MessageStore_MessageChanged;
+        }
+
+        private void MessageStore_MessageChanged()
+        {
+            OnPropertyChanged(nameof(MessageStore));
+        }
+
+        public override void Dispose()
+        {
+            MessageStore.MessageChanged -= MessageStore_MessageChanged;
+            base.Dispose();
         }
 
         public static LibrarianMenuViewModel LoadViewModel(UserStore userStore,

@@ -159,7 +159,9 @@ namespace OnlineLibraryWPF.ViewModels
                                  INavigationService closeModalNavigationService,
                                  INavigationService closeModalAndReloadCustomersNavigationService)
         {
-            AddOrUpdateCustomerCommand = new AddOrUpdateCustomerCommand(usersService, userStore, messageStore, closeModalAndReloadCustomersNavigationService, this);
+            INavigationService navigationAfterEdit = userStore.IsLoggedInCustomer ? closeModalNavigationService : closeModalAndReloadCustomersNavigationService;
+
+            AddOrUpdateCustomerCommand = new AddOrUpdateCustomerCommand(usersService, userStore, messageStore, navigationAfterEdit, this);
             CloseModalCommand = new NavigateCommand(closeModalNavigationService);
             MessageStore = messageStore;
             

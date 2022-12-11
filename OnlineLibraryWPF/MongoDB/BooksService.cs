@@ -30,16 +30,16 @@ namespace OnlineLibraryWPF.MongoDB
         public async Task<List<Book>> GetAsync() =>
             await _booksCollection.Find(_ => true).ToListAsync();
 
-        public async Task<Book?> GetAsync(string id) =>
+        public async Task<Book?> GetAsync(ObjectId id) =>
             await _booksCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
         public async Task CreateAsync(Book newBook) =>
             await _booksCollection.InsertOneAsync(newBook);
 
-        public async Task UpdateAsync(string id, Book updatedBook) =>
+        public async Task UpdateAsync(ObjectId id, Book updatedBook) =>
             await _booksCollection.ReplaceOneAsync(x => x.Id == id, updatedBook);
 
-        public async Task RemoveAsync(string id) =>
+        public async Task RemoveAsync(ObjectId id) =>
             await _booksCollection.DeleteOneAsync(x => x.Id == id);
 
         public async Task<List<Book>> GetAllBooksAsync(string searchString, bool onlyAvailable = false)
@@ -57,7 +57,7 @@ namespace OnlineLibraryWPF.MongoDB
             return await _booksCollection.Find(filter).ToListAsync();
         }
 
-        public async Task<bool> CheckIfRented(string id)
+        public async Task<bool> CheckIfRented(ObjectId id)
         {
             FilterDefinition<Book> filter = Builders<Book>.Filter.Eq(x => x.Id, id);
             ProjectionDefinition<Book> projection = Builders<Book>.Projection.Include("RentedBooks").Exclude("_id");

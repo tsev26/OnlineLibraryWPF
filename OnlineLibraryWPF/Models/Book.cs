@@ -19,21 +19,18 @@ namespace OnlineLibraryWPF.Models
             YearPublished = yearPublished;
             Picture = picture;
             TotalLicences = totalLicences;
-            RentedBooks = new List<RentedBooks>();
         }
 
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
-
+        public ObjectId Id { get; set; }
         public string Title { get; set; }
         public string Author { get; set; }
         public int NumberOfPages { get; set; }
         public int YearPublished { get; set; }
         public byte[] Picture { get; set; } //GridFS
         public int TotalLicences { get; set; }
-        public virtual List<RentedBooks> RentedBooks { get; set; }
-        public int RentedLicences => RentedBooks.Where(o => o.BookReturned == null).Count();
+        public int RentedLicences { get; set; }
         public int AvaibleLicences => TotalLicences - RentedLicences;
     }
 }

@@ -54,12 +54,13 @@ namespace OnlineLibraryWPF.ViewModels
 
         public BooksViewModel(UserStore userStore,
                               BooksService booksService,
-                              RentedBooksService rentedBooksService,
+                              UsersService usersService,
                               MessageStore messageStore,
                               INavigationService navigateLibrarianCommand,
                               INavigationService navigateCustomerMenuCommand,
                               INavigationService navigateRentalsCommand,
-                              INavigationService navigateAddUpdateBookCommand)
+                              INavigationService navigateAddUpdateBookCommand,
+                              INavigationService navigateBooksNavigationService)
         {
             UserStore = userStore;
             MessageStore = messageStore;
@@ -69,7 +70,7 @@ namespace OnlineLibraryWPF.ViewModels
             NavigateAddBookCommand = new NavigateAddBookCommand(navigateAddUpdateBookCommand, userStore);
             NavigateEditBookCommand = new NavigateCommand(navigateAddUpdateBookCommand);
             NavigateRentalsCommand = new NavigateCommand(navigateRentalsCommand);
-            RentBookCommand = new RentBookCommand(rentedBooksService);
+            RentBookCommand = new RentBookCommand(booksService, usersService, userStore, messageStore, navigateBooksNavigationService);
             LoadBooksCommand = new LoadBooksCommand(this, booksService);
             DeleteBookCommand = new DeleteBookCommand(booksService, userStore, messageStore, this);
 
@@ -98,21 +99,23 @@ namespace OnlineLibraryWPF.ViewModels
 
         public static BooksViewModel LoadViewModel(UserStore userStore,
                                                BooksService booksService,
-                                               RentedBooksService rentedBooksService,
+                                               UsersService usersService,
                                                MessageStore messageStore,
                                                INavigationService navigateLibrarianCommand,
                                                INavigationService navigateCustomerMenuCommand,
                                                INavigationService navigateRentalsCommand,
-                                               INavigationService navigateAddUpdateBookCommand)
+                                               INavigationService navigateAddUpdateBookCommand,
+                                               INavigationService navigateBooksNavigationService)
         {
             BooksViewModel viewModel = new BooksViewModel(userStore,
                                                           booksService,
-                                                          rentedBooksService,
+                                                          usersService,
                                                           messageStore,
                                                           navigateLibrarianCommand,
                                                           navigateCustomerMenuCommand,
                                                           navigateRentalsCommand,
-                                                          navigateAddUpdateBookCommand);
+                                                          navigateAddUpdateBookCommand,
+                                                          navigateBooksNavigationService);
 
             viewModel.Books = new ObservableCollection<Book>();
 

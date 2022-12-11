@@ -119,12 +119,13 @@ namespace OnlineLibraryWPF
             return BooksViewModel.LoadViewModel(
                 serviceProvider.GetRequiredService<UserStore>(),
                 serviceProvider.GetRequiredService<BooksService>(),
-                serviceProvider.GetRequiredService<RentedBooksService>(),
+                serviceProvider.GetRequiredService<UsersService>(),
                 serviceProvider.GetRequiredService<MessageStore>(),
                 CreateLibrarianMenuNavigationService(serviceProvider),
                 CreateCustomerMenuNavigationService(serviceProvider),
                 CreateRentalsNavigationService(serviceProvider),
-                CreateBookAddEditNavigationService(serviceProvider));
+                CreateBookAddEditNavigationService(serviceProvider),
+                CreateBooksNavigationService(serviceProvider));
         }
 
         private INavigationService CreateRentalsNavigationService(IServiceProvider serviceProvider)

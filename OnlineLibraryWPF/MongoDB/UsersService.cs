@@ -30,7 +30,7 @@ namespace OnlineLibraryWPF.MongoDB
         public async Task<List<User>> GetAsync() =>
             await _usersCollection.Find(_ => true).ToListAsync();
 
-        public async Task<User?> GetAsync(string id) =>
+        public async Task<User?> GetAsync(ObjectId id) =>
             await _usersCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
         public async Task<List<User>> GetAllCustomersAsync(string searchString = "") 
@@ -62,20 +62,20 @@ namespace OnlineLibraryWPF.MongoDB
         public async Task CreateAsync(User newUser) =>
             await _usersCollection.InsertOneAsync(newUser);
 
-        public async Task UpdateAsync(string id, User updatedUser)
+        public async Task UpdateAsync(ObjectId id, User updatedUser)
         {
             FilterDefinition<User> filter = Builders<User>.Filter.Eq(x => x.Id, id);
             await _usersCollection.ReplaceOneAsync(filter, updatedUser);
         }
             
 
-        public async Task RemoveAsync(string id) =>
+        public async Task RemoveAsync(ObjectId id) =>
             await _usersCollection.DeleteOneAsync(x => x.Id == id);
 
         public async Task<bool> CheckUserWithLoginExists(string? loginName) => 
             await _usersCollection.Find(x => x.LoginName == loginName ).FirstOrDefaultAsync() != null;
 
-        public async Task BanUser(string? id, bool value)
+        public async Task BanUser(ObjectId? id, bool value)
         {
             FilterDefinition<User> filter = Builders<User>.Filter.Eq(x => x.Id, id);
             UpdateDefinition<User> update = Builders<User>.Update.Set("IsBanned", value);
@@ -84,7 +84,7 @@ namespace OnlineLibraryWPF.MongoDB
 
 
 
-        public async Task ApproveUser(string? id, bool value)
+        public async Task ApproveUser(ObjectId? id, bool value)
         {
             FilterDefinition<User> filter = Builders<User>.Filter.Eq(x => x.Id, id);
             UpdateDefinition<User> update = Builders<User>.Update.Set("IsApproved", value);
@@ -97,7 +97,7 @@ namespace OnlineLibraryWPF.MongoDB
             return await _usersCollection.CountDocumentsAsync(filter);
         }
 
-        public async Task<long> GetNumberOfRentalsCustomerAsync(string? id)
+        public async Task<long> GetNumberOfRentalsCustomerAsync(ObjectId? id)
         {
             FilterDefinition<User> filter = Builders<User>.Filter.Eq(x => x.Id, id); 
             ProjectionDefinition<User> projection = Builders<User>.Projection.Include("RentedBooks").Exclude("_id");
@@ -116,6 +116,13 @@ namespace OnlineLibraryWPF.MongoDB
             }
 
             return count;
+        }
+
+        public async Task RentBook(ObjectId id, RentedBook rentedBook)
+        {
+            FilterDefinition<User> filter = Builders<User>.Filter.Eq(x => x.Id, id);
+            var update = Builders<User>.Update.Push("RentedBooks", rentedBook);
+            await _usersCollection.FindOneAndUpdateAsync(filter, update);
         }
     }
 }

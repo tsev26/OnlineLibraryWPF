@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using OnlineLibraryWPF.Models;
 using System;
@@ -11,7 +12,7 @@ namespace OnlineLibraryWPF.MongoDB
 {
     public class RentedBooksService
     {
-        private readonly IMongoCollection<RentedBooks> _rentedBooksCollection;
+        private readonly IMongoCollection<RentedBook> _rentedBooksCollection;
 
         public RentedBooksService(DatabaseSettings databaseSettings)
         {
@@ -21,23 +22,25 @@ namespace OnlineLibraryWPF.MongoDB
             var mongoDatabase = mongoClient.GetDatabase(
                 databaseSettings.DatabaseName);
 
-            _rentedBooksCollection = mongoDatabase.GetCollection<RentedBooks>(
+            _rentedBooksCollection = mongoDatabase.GetCollection<RentedBook>(
                 databaseSettings.RentedBooksCollectionName);
         }
 
-        public async Task<List<RentedBooks>> GetAsync() =>
+        public async Task<List<RentedBook>> GetAsync() =>
             await _rentedBooksCollection.Find(_ => true).ToListAsync();
 
-        public async Task<RentedBooks?> GetAsync(string id) =>
+        /*
+        public async Task<RentedBook?> GetAsync(ObjectId id) =>
             await _rentedBooksCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
-        public async Task CreateAsync(RentedBooks newRental) =>
+        public async Task CreateAsync(RentedBook newRental) =>
             await _rentedBooksCollection.InsertOneAsync(newRental);
 
-        public async Task UpdateAsync(string id, RentedBooks updatedRental) =>
+        public async Task UpdateAsync(ObjectId id, RentedBook updatedRental) =>
             await _rentedBooksCollection.ReplaceOneAsync(x => x.Id == id, updatedRental);
 
-        public async Task RemoveAsync(string id) =>
+        public async Task RemoveAsync(ObjectId id) =>
             await _rentedBooksCollection.DeleteOneAsync(x => x.Id == id);
+        */
     }
 }

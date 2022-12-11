@@ -115,7 +115,12 @@ namespace OnlineLibraryWPF.Commands
                                                  false);
                 customer.Id = _userStore.Customer.Id;
 
-                await _usersService.UpdateAsync(_userStore.Customer.Id, customer);
+                _userStore.Customer.FirstName = _registerViewModel.FirstName;
+                _userStore.Customer.LastName = _registerViewModel.LastName;
+                _userStore.Customer.PID = _registerViewModel.PID;
+                _userStore.Customer.Address = new Address(_registerViewModel.Street, _registerViewModel.City, _registerViewModel.PostalCode, _registerViewModel.Country);
+
+                await _usersService.UpdateAsync((global::MongoDB.Bson.ObjectId)_userStore.Customer.Id, customer);
 
                 _messageStore.Message = "User upadated!";
             }
