@@ -12,14 +12,14 @@ namespace OnlineLibraryWPF.Commands
 {
     public class DeleteBookCommand : AsyncCommandBase
     {
-        private readonly BooksService _booksService;
+        private readonly MongoDBService _mongoDBService;
         private readonly UserStore _userStore;
         private readonly MessageStore _messageStore;
         private readonly BooksViewModel _booksViewModel;
 
-        public DeleteBookCommand(BooksService booksService, UserStore userStore, MessageStore messageStore, BooksViewModel booksViewModel)
+        public DeleteBookCommand(MongoDBService mongoDBService, UserStore userStore, MessageStore messageStore, BooksViewModel booksViewModel)
         {
-            _booksService = booksService;
+            _mongoDBService = mongoDBService;
             _userStore = userStore;
             _messageStore = messageStore;
             _booksViewModel = booksViewModel;
@@ -27,12 +27,12 @@ namespace OnlineLibraryWPF.Commands
 
         public async override Task ExecuteAsync(object? parameter)
         {
-            bool isRented = await _booksService.CheckIfRented(_userStore.Book.Id);
+            bool isRented = await _mongoDBService.CheckIfRented(_userStore.Book.Id);
 
             if (!isRented)
             {
 
-                await _booksService.RemoveAsync(_userStore.Book.Id);
+                await _mongoDBService.RemoveBookAsync(_userStore.Book.Id);
 
                 _messageStore.Message = "Book " + _userStore.Book.Title + " deleted!";
 

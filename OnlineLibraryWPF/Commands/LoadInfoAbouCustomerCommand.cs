@@ -10,11 +10,11 @@ namespace OnlineLibraryWPF.Commands
 {
     public class LoadInfoAbouCustomerCommand : AsyncCommandBase
     {
-        private readonly UsersService _usersService;
+        private readonly MongoDBService _usersService;
         private readonly MessageStore _messageStore;
         private readonly UserStore _userStore;
 
-        public LoadInfoAbouCustomerCommand(UsersService usersService, UserStore userStore, MessageStore messageStore)
+        public LoadInfoAbouCustomerCommand(MongoDBService usersService, UserStore userStore, MessageStore messageStore)
         {
             _usersService = usersService;
             _messageStore = messageStore;

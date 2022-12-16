@@ -30,9 +30,10 @@ namespace OnlineLibraryWPF
             IServiceCollection services = new ServiceCollection();
 
             services.AddSingleton<DatabaseSettings>(settings);
-            services.AddSingleton<UsersService>();
-            services.AddSingleton<BooksService>();
-            services.AddSingleton<RentedBooksService>();
+            //services.AddSingleton<UsersService>();
+            //services.AddSingleton<BooksService>();
+            //services.AddSingleton<RentedBooksService>();
+            services.AddSingleton<MongoDBService>();
 
             services.AddSingleton<NavigationStore>();
             services.AddSingleton<ModalNavigationStore>();
@@ -85,7 +86,7 @@ namespace OnlineLibraryWPF
                 CreateCustomerMenuNavigationService(serviceProvider),
                 CreateLibrarianMenuNavigationService(serviceProvider),
                 CreateRegisterNavigationService(serviceProvider),
-                serviceProvider.GetRequiredService<UsersService>(),
+                serviceProvider.GetRequiredService<MongoDBService>(),
                 serviceProvider.GetRequiredService<MessageStore>()
                 );
         }
@@ -99,7 +100,7 @@ namespace OnlineLibraryWPF
                 CreateRentalsNavigationService(serviceProvider),
                 CreateHomeNavigationService(serviceProvider),
                 serviceProvider.GetRequiredService<MessageStore>(),
-                serviceProvider.GetRequiredService<UsersService>()
+                serviceProvider.GetRequiredService<MongoDBService>()
                 );
         }
 
@@ -107,7 +108,7 @@ namespace OnlineLibraryWPF
         {
             return CustomersViewModel.LoadViewModel(
                 serviceProvider.GetRequiredService<UserStore>(),
-                serviceProvider.GetRequiredService<UsersService>(),
+                serviceProvider.GetRequiredService<MongoDBService>(),
                 serviceProvider.GetRequiredService<MessageStore>(),
                 CreateLibrarianMenuNavigationService(serviceProvider),
                 CreateRegisterNavigationService(serviceProvider),
@@ -118,8 +119,7 @@ namespace OnlineLibraryWPF
         {
             return BooksViewModel.LoadViewModel(
                 serviceProvider.GetRequiredService<UserStore>(),
-                serviceProvider.GetRequiredService<BooksService>(),
-                serviceProvider.GetRequiredService<UsersService>(),
+                serviceProvider.GetRequiredService<MongoDBService>(),
                 serviceProvider.GetRequiredService<MessageStore>(),
                 CreateLibrarianMenuNavigationService(serviceProvider),
                 CreateCustomerMenuNavigationService(serviceProvider),
@@ -132,8 +132,7 @@ namespace OnlineLibraryWPF
         {
             return RentalsViewModel.LoadViewModel(
                 serviceProvider.GetRequiredService<UserStore>(),
-                serviceProvider.GetRequiredService<BooksService>(),
-                serviceProvider.GetRequiredService<UsersService>(),
+                serviceProvider.GetRequiredService<MongoDBService>(),
                 serviceProvider.GetRequiredService<MessageStore>(),
                 CreateLibrarianMenuNavigationService(serviceProvider),
                 CreateCustomerMenuNavigationService(serviceProvider));
@@ -168,7 +167,7 @@ namespace OnlineLibraryWPF
             return CustomerMenuViewModel.LoadViewModel(
                 serviceProvider.GetRequiredService<UserStore>(),
                 serviceProvider.GetRequiredService<MessageStore>(),
-                serviceProvider.GetRequiredService<UsersService>(),
+                serviceProvider.GetRequiredService<MongoDBService>(),
                 CreateHomeNavigationService(serviceProvider),
                 CreateBooksNavigationService(serviceProvider),
                 CreateRentalsNavigationService(serviceProvider),
@@ -184,7 +183,7 @@ namespace OnlineLibraryWPF
 
 
             return RegisterViewModel.LoadViewModel(
-                serviceProvider.GetRequiredService<UsersService>(),
+                serviceProvider.GetRequiredService<MongoDBService>(),
                 serviceProvider.GetRequiredService<UserStore>(),
                 serviceProvider.GetRequiredService<MessageStore>(),
                 serviceProvider.GetRequiredService<CloseModalNavigationService>(),

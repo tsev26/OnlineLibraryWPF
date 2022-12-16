@@ -59,8 +59,7 @@ namespace OnlineLibraryWPF.ViewModels
         }
 
         public RentalsViewModel(UserStore userStore,
-                              BooksService booksService,
-                              UsersService usersService,
+                              MongoDBService mongoDBService,
                               MessageStore messageStore,
                               INavigationService navigateLibrarianCommand,
                               INavigationService navigateCustomerMenuCommand)
@@ -71,7 +70,7 @@ namespace OnlineLibraryWPF.ViewModels
             NavigateLibrarianMenuCommand = new NavigateCommand(navigateLibrarianCommand);
             NavigateCustomerMenuCommand = new NavigateCommand(navigateCustomerMenuCommand);
 
-            LoadRentalsCommand = new LoadRentalsCommand(this, usersService);
+            LoadRentalsCommand = new LoadRentalsCommand(this, mongoDBService);
             ReturnBookCommand = new ReturnBookCommand();
 
             MessageStore.MessageChanged += MessageStore_MessageChanged;
@@ -96,15 +95,13 @@ namespace OnlineLibraryWPF.ViewModels
         }
 
         public static RentalsViewModel LoadViewModel(UserStore userStore,
-                                                     BooksService booksService,
-                                                     UsersService usersService,
+                                                     MongoDBService mongoDBService,
                                                      MessageStore messageStore,
                                                      INavigationService navigateLibrarianCommand,
                                                      INavigationService navigateCustomerMenuCommand)
         {
             RentalsViewModel viewModel = new RentalsViewModel(userStore,
-                                                     booksService,
-                                                     usersService,
+                                                     mongoDBService,
                                                      messageStore,
                                                      navigateLibrarianCommand,
                                                      navigateCustomerMenuCommand);

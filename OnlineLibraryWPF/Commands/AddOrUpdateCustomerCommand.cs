@@ -14,12 +14,12 @@ namespace OnlineLibraryWPF.Commands
 {
     public class AddOrUpdateCustomerCommand : AsyncCommandBase
     {
-        private readonly UsersService _usersService;
+        private readonly MongoDBService _usersService;
         private readonly MessageStore _messageStore;
         private readonly INavigationService _closeModalNavigationService;
         private readonly RegisterViewModel _registerViewModel;
         private readonly UserStore _userStore;
-        public AddOrUpdateCustomerCommand(UsersService usersService, 
+        public AddOrUpdateCustomerCommand(MongoDBService usersService, 
                                           UserStore userStore,
                                           MessageStore messageStore, 
                                           INavigationService closeModalNavigationService, 
@@ -98,7 +98,7 @@ namespace OnlineLibraryWPF.Commands
                                                  _registerViewModel.PID,
                                                  new Address(_registerViewModel.Street, _registerViewModel.City, _registerViewModel.PostalCode, _registerViewModel.Country),
                                                  false);
-                await _usersService.CreateAsync(customer);
+                await _usersService.CreateUserAsync(customer);
 
                 _messageStore.Message = "User created!";
             }
@@ -120,7 +120,7 @@ namespace OnlineLibraryWPF.Commands
                 _userStore.Customer.PID = _registerViewModel.PID;
                 _userStore.Customer.Address = new Address(_registerViewModel.Street, _registerViewModel.City, _registerViewModel.PostalCode, _registerViewModel.Country);
 
-                await _usersService.UpdateAsync((global::MongoDB.Bson.ObjectId)_userStore.Customer.Id, customer);
+                await _usersService.UpdateUserAsync((global::MongoDB.Bson.ObjectId)_userStore.Customer.Id, customer);
 
                 _messageStore.Message = "User upadated!";
             }
@@ -135,7 +135,7 @@ namespace OnlineLibraryWPF.Commands
                                                  true);
 
 
-                await _usersService.CreateAsync(customer);
+                await _usersService.CreateUserAsync(customer);
 
                 _messageStore.Message = "User created!";
             }

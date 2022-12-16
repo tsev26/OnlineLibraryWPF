@@ -17,11 +17,13 @@ namespace OnlineLibraryWPF.ViewModels
     {
         public ICommand NavigateLibrarianMenuCommand { get; }
         public ICommand NavigateCustomerMenuCommand { get; }
+        
         public ICommand NavigateAddBookCommand { get; }
         public ICommand NavigateEditBookCommand { get; }
         public ICommand NavigateRentalsCommand { get; }
         public ICommand RentBookCommand { get; }
         public ICommand LoadBooksCommand { get; }
+
         public ICommand DeleteBookCommand { get; }
 
         public bool IsLoading { get; set; }
@@ -51,8 +53,7 @@ namespace OnlineLibraryWPF.ViewModels
         public bool IsBookSelectedForCustomer => IsBookSelected && UserStore.IsLoggedInCustomer;
 
         public BooksViewModel(UserStore userStore,
-                              BooksService booksService,
-                              UsersService usersService,
+                              MongoDBService mongoDBService,
                               MessageStore messageStore,
                               INavigationService navigateLibrarianCommand,
                               INavigationService navigateCustomerMenuCommand,
@@ -68,9 +69,9 @@ namespace OnlineLibraryWPF.ViewModels
             NavigateAddBookCommand = new NavigateAddBookCommand(navigateAddUpdateBookCommand, userStore);
             NavigateEditBookCommand = new NavigateCommand(navigateAddUpdateBookCommand);
             NavigateRentalsCommand = new NavigateCommand(navigateRentalsCommand);
-            RentBookCommand = new RentBookCommand(booksService, usersService, userStore, messageStore, navigateBooksNavigationService);
-            LoadBooksCommand = new LoadBooksCommand(this, booksService);
-            DeleteBookCommand = new DeleteBookCommand(booksService, userStore, messageStore, this);
+            RentBookCommand = new RentBookCommand(mongoDBService, userStore, messageStore, navigateBooksNavigationService);
+            LoadBooksCommand = new LoadBooksCommand(this, mongoDBService);
+            DeleteBookCommand = new DeleteBookCommand(mongoDBService, userStore, messageStore, this);
 
             MessageStore.MessageChanged += MessageStore_MessageChanged;
             UserStore.BookChanged += UserStore_BookChanged;
@@ -96,8 +97,7 @@ namespace OnlineLibraryWPF.ViewModels
         }
 
         public static BooksViewModel LoadViewModel(UserStore userStore,
-                                               BooksService booksService,
-                                               UsersService usersService,
+                                               MongoDBService usersService,
                                                MessageStore messageStore,
                                                INavigationService navigateLibrarianCommand,
                                                INavigationService navigateCustomerMenuCommand,
@@ -106,7 +106,6 @@ namespace OnlineLibraryWPF.ViewModels
                                                INavigationService navigateBooksNavigationService)
         {
             BooksViewModel viewModel = new BooksViewModel(userStore,
-                                                          booksService,
                                                           usersService,
                                                           messageStore,
                                                           navigateLibrarianCommand,

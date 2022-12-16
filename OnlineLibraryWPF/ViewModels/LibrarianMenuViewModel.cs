@@ -29,14 +29,14 @@ namespace OnlineLibraryWPF.ViewModels
                                       INavigationService navigateRentalsCommand,
                                       INavigationService navigateHomeCommand,
                                       MessageStore messageStore,
-                                      UsersService usersService)
+                                      MongoDBService mongoDBService)
         {
             MessageStore = messageStore;
             LogoutCommand = new LogoutCommand(navigateHomeCommand, userStore);
             NavigateCustomersCommand = new NavigateCommand(navigateCustomersCommand);
             NavigateBooksCommand = new NavigateCommand(navigateBooksCommand);
             NavigateRentalsCommand = new NavigateCommand(navigateRentalsCommand);
-            LoadInfoAbouCustomersCommand = new LoadInfoAbouCustomersCommand(usersService, messageStore);
+            LoadInfoAbouCustomersCommand = new LoadInfoAbouCustomersCommand(mongoDBService, messageStore);
             ExportCommand = new ExportCommand();
             ImportCommand = new ImportCommand();
 
@@ -60,7 +60,7 @@ namespace OnlineLibraryWPF.ViewModels
                                       INavigationService navigateRentalsCommand,
                                       INavigationService navigateHomeCommand,
                                       MessageStore messageStore,
-                                      UsersService usersService)
+                                      MongoDBService mongoDBService)
         {
             LibrarianMenuViewModel viewModel = new LibrarianMenuViewModel(userStore,
                                                                           navigateCustomersCommand,
@@ -68,7 +68,7 @@ namespace OnlineLibraryWPF.ViewModels
                                                                           navigateRentalsCommand,
                                                                           navigateHomeCommand,
                                                                           messageStore,
-                                                                          usersService);
+                                                                          mongoDBService);
 
             viewModel.LoadInfoAbouCustomersCommand.Execute(null);
 

@@ -13,11 +13,11 @@ namespace OnlineLibraryWPF.Commands
     public class BanUserCommand : AsyncCommandBase
     {
         private readonly UserStore _userStore;
-        private readonly UsersService _usersService;
+        private readonly MongoDBService _usersService;
         private readonly MessageStore _messageStore;
         private readonly CustomersViewModel _customersViewModel;
 
-        public BanUserCommand(UserStore userStore, UsersService usersService, MessageStore messageStore, CustomersViewModel customersViewModel)
+        public BanUserCommand(UserStore userStore, MongoDBService usersService, MessageStore messageStore, CustomersViewModel customersViewModel)
         {
             _userStore = userStore;
             _usersService = usersService;

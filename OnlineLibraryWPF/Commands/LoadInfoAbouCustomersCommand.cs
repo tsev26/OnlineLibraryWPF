@@ -11,18 +11,18 @@ namespace OnlineLibraryWPF.Commands
 {
     public class LoadInfoAbouCustomersCommand : AsyncCommandBase
     {
-        private readonly UsersService _usersService;
+        private readonly MongoDBService _mongoDBService;
         private readonly MessageStore _messageStore;
 
-        public LoadInfoAbouCustomersCommand(UsersService usersService, MessageStore messageStore)
+        public LoadInfoAbouCustomersCommand(MongoDBService mongoDBService, MessageStore messageStore)
         {
-            _usersService = usersService;
+            _mongoDBService = mongoDBService;
             _messageStore = messageStore;
         }
 
         public async override Task ExecuteAsync(object? parameter)
         {
-            long numberOfUnapprovedCustomers = await _usersService.GetNumberOfUnapprovedCustomersAsync();
+            long numberOfUnapprovedCustomers = await _mongoDBService.GetNumberOfUnapprovedCustomersAsync();
             _messageStore.Message = "There are " + numberOfUnapprovedCustomers + " customers waiting to be approved!";
         }
     }

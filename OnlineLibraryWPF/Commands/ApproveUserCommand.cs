@@ -13,14 +13,14 @@ namespace OnlineLibraryWPF.Commands
     public class ApproveUserCommand : AsyncCommandBase
     {
         private readonly UserStore _userStore;
-        private readonly UsersService _usersService;
+        private readonly MongoDBService _mongoDBService;
         private readonly MessageStore _messageStore;
         private readonly CustomersViewModel _customersViewModel;
 
-        public ApproveUserCommand(UserStore userStore, UsersService usersService, MessageStore messageStore, CustomersViewModel customersViewModel)
+        public ApproveUserCommand(UserStore userStore, MongoDBService mongoDBService, MessageStore messageStore, CustomersViewModel customersViewModel)
         {
             _userStore = userStore;
-            _usersService = usersService;
+            _mongoDBService = mongoDBService;
             _messageStore = messageStore;
             _customersViewModel = customersViewModel;
         }
@@ -32,7 +32,7 @@ namespace OnlineLibraryWPF.Commands
                 _messageStore.Message = "First select customer to approve!";
                 return;
             }
-            await _usersService.ApproveUser(_userStore.Customer.Id, !_userStore.Customer.IsApproved);
+            await _mongoDBService.ApproveUser(_userStore.Customer.Id, !_userStore.Customer.IsApproved);
             
             _messageStore.Message = "Customer " + _userStore.Customer.LoginName + (!_userStore.Customer.IsApproved ? " approved" : " unapproved") + "!";
             //_userStore.Customer.IsApproved = !_userStore.Customer.IsApproved;

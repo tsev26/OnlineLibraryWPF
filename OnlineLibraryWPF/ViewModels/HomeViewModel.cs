@@ -46,11 +46,11 @@ namespace OnlineLibraryWPF.ViewModels
                             INavigationService navigateCustomerCommand,
                             INavigationService navigateLibrarianCommand,
 							INavigationService navigateRegisterCommand,
-                            UsersService usersService,
+							MongoDBService mongoDBService,
                             MessageStore messageStore)
         {
 			MessageStore = messageStore;
-            LoginCommand = new LoginCommand(userStore, navigateCustomerCommand, navigateLibrarianCommand, usersService, this);
+            LoginCommand = new LoginCommand(userStore, navigateCustomerCommand, navigateLibrarianCommand, mongoDBService, this);
 			RegisterCommand = new NavigateCommand(navigateRegisterCommand);
 
             MessageStore.MessageChanged += MessageStore_MessageChanged;

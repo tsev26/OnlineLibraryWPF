@@ -45,8 +45,8 @@ namespace OnlineLibraryWPF.ViewModels
 
         public bool IsCustomerSelected => UserStore.Customer != null;
 
-        public CustomersViewModel(UserStore userStore, 
-                                  UsersService usersService, 
+        public CustomersViewModel(UserStore userStore,
+                                  MongoDBService mongoDBService, 
                                   MessageStore messageStore, 
                                   INavigationService navigateLibrarianCommand,
                                   INavigationService navigateRegisterCommand,
@@ -59,9 +59,9 @@ namespace OnlineLibraryWPF.ViewModels
             NavigateEditCommand = new NavigateCommand(navigateRegisterCommand);
             NavigateRegisterCommand = new NavigateRegisterCommand(navigateRegisterCommand, this);
             NavigateRentalsCommand = new NavigateCommand(navigateRentalsCommand);
-            ApproveUserCommand = new ApproveUserCommand(userStore, usersService, messageStore, this);
-            BanUserCommand = new BanUserCommand(userStore, usersService, messageStore, this);
-            LoadCustomersCommand = new LoadCustomersCommand(this, usersService);
+            ApproveUserCommand = new ApproveUserCommand(userStore, mongoDBService, messageStore, this);
+            BanUserCommand = new BanUserCommand(userStore, mongoDBService, messageStore, this);
+            LoadCustomersCommand = new LoadCustomersCommand(this, mongoDBService);
 
             MessageStore.MessageChanged += MessageStore_MessageChanged;
             UserStore.CustomerChanged += UserStore_CustomerChanged;
@@ -85,14 +85,14 @@ namespace OnlineLibraryWPF.ViewModels
         }
 
         public static CustomersViewModel LoadViewModel(UserStore userStore,
-                                                       UsersService usersService, 
+                                                       MongoDBService mongoDBService, 
                                                        MessageStore messageStore, 
                                                        INavigationService navigateLibrarianCommand,
                                                        INavigationService navigateRegisterCommand,
                                                        INavigationService navigateRentalsCommand)
         {
             CustomersViewModel viewModel = new CustomersViewModel(userStore,
-                                                                  usersService, 
+                                                                  mongoDBService, 
                                                                   messageStore, 
                                                                   navigateLibrarianCommand, 
                                                                   navigateRegisterCommand, 

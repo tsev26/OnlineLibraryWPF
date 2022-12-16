@@ -13,19 +13,19 @@ namespace OnlineLibraryWPF.Commands
         private readonly UserStore _userStore;
         private readonly INavigationService _navigateCustomerCommand;
         private readonly INavigationService _navigateLibrarianCommand;
-        private readonly UsersService _usersService;
+        private readonly MongoDBService _mongoDBService;
         private readonly HomeViewModel _homeViewModel;
 
         public LoginCommand(UserStore userStore, 
                             INavigationService navigateCustomerCommand, 
-                            INavigationService navigateLibrarianCommand, 
-                            UsersService usersService,
+                            INavigationService navigateLibrarianCommand,
+                            MongoDBService mongoDBService,
                             HomeViewModel homeViewModel)
         {
             _userStore = userStore;
             _navigateCustomerCommand = navigateCustomerCommand;
             _navigateLibrarianCommand = navigateLibrarianCommand;
-            _usersService = usersService;
+            _mongoDBService = mongoDBService;
             _homeViewModel = homeViewModel;
         }
 
@@ -43,7 +43,7 @@ namespace OnlineLibraryWPF.Commands
             }
             
 
-            User user = await _usersService.GetByLoginAndPassAsync(_homeViewModel.LoginName, HashString(_homeViewModel.Password));
+            User user = await _mongoDBService.GetByLoginAndPassAsync(_homeViewModel.LoginName, HashString(_homeViewModel.Password));
 
             if (user != null)
             {

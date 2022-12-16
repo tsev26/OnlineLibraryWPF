@@ -25,7 +25,7 @@ namespace OnlineLibraryWPF.ViewModels
 
         public CustomerMenuViewModel(UserStore userStore,
                                      MessageStore messageStore,
-                                     UsersService usersService,
+                                     MongoDBService usersService,
                                      INavigationService navigateHomeCommand,
                                      INavigationService navigateBooksCommand,
                                      INavigationService navigateRentalsCommand,
@@ -55,7 +55,7 @@ namespace OnlineLibraryWPF.ViewModels
 
         public static CustomerMenuViewModel LoadViewModel(UserStore userStore,
                                      MessageStore messageStore,
-                                     UsersService usersService,
+                                     MongoDBService usersService,
                                      INavigationService navigateHomeCommand,
                                      INavigationService navigateBooksCommand,
                                      INavigationService navigateRentalsCommand,

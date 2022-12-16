@@ -12,13 +12,19 @@ namespace OnlineLibraryWPF.Models
     {
         private static readonly TimeSpan MAXDAYSRENTED = new(6, 0, 0, 0);
 
-        public RentedBook(ObjectId bookId, DateTime bookRented, DateTime? bookReturned = null)
+        public RentedBook(ObjectId bookId, ObjectId customerId, DateTime bookRented, DateTime? bookReturned = null)
         {
             BookId = bookId;
+            CustomerId = customerId;
             BookRented = bookRented;
             BookReturned = bookReturned;
         }
-        public ObjectId _id { get; set; }
+
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public ObjectId Id { get; set; }
+
+        public ObjectId CustomerId { get; set; }
 
         public ObjectId BookId { get; set; }
 

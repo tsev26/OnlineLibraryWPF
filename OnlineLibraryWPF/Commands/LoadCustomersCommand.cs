@@ -15,8 +15,8 @@ namespace OnlineLibraryWPF.Commands
     public class LoadCustomersCommand : AsyncCommandBase
     {
         private readonly CustomersViewModel _viewModel;
-        private readonly UsersService _usersService;
-        public LoadCustomersCommand(CustomersViewModel viewModel, UsersService usersService)
+        private readonly MongoDBService _usersService;
+        public LoadCustomersCommand(CustomersViewModel viewModel, MongoDBService usersService)
         {
             _viewModel = viewModel;
             _usersService = usersService;

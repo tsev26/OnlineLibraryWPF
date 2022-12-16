@@ -13,20 +13,17 @@ namespace OnlineLibraryWPF.Commands
 {
     public class RentBookCommand : AsyncCommandBase
     {
-        private readonly UsersService _usersService;
-        private readonly BooksService _booksService;
+        private readonly MongoDBService _mongoDBService;
         private readonly UserStore _userStore;
         private readonly MessageStore _messageStore;
         private readonly INavigationService _navigationService;
 
-        public RentBookCommand(BooksService booksService, 
-                               UsersService usersService, 
+        public RentBookCommand(MongoDBService mongoDBService, 
                                UserStore userStore, 
                                MessageStore messageStore, 
                                INavigationService navigateBooksNavigationService) 
         {
-            _usersService = usersService;
-            _booksService = booksService;
+            _mongoDBService = mongoDBService;
             _userStore = userStore;
             _messageStore = messageStore;
             _navigationService = navigateBooksNavigationService;
@@ -61,14 +58,14 @@ namespace OnlineLibraryWPF.Commands
                 }
             }
 
-            RentedBook rentedBook = new RentedBook(book.Id, DateTime.Now);
+            RentedBook rentedBook = new RentedBook(book.Id, user.Id, DateTime.Now);
 
             
-            await _usersService.RentBook(user.Id, rentedBook);
+            await _mongoDBService.RentBook(user.Id, rentedBook);
             _userStore.Customer.RentedBooks.Add(rentedBook);
 
             ++book.RentedLicences;
-            await _booksService.UpdateAsync(book.Id, book);
+            await _mongoDBService.UpdateBookAsync(book.Id, book);
 
             _navigationService.Navigate(user.LoginName + " rents " + book.Title);
         }

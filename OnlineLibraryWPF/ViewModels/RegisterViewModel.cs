@@ -153,7 +153,7 @@ namespace OnlineLibraryWPF.ViewModels
 
         public MessageStore MessageStore { get; set; }
 
-        public RegisterViewModel(UsersService usersService, 
+        public RegisterViewModel(MongoDBService usersService, 
                                  UserStore userStore, 
                                  MessageStore messageStore, 
                                  INavigationService closeModalNavigationService,
@@ -168,7 +168,7 @@ namespace OnlineLibraryWPF.ViewModels
             MessageStore.ModalMessageChanged += MessageStore_ModalMessageChanged;
         }
 
-        public static RegisterViewModel LoadViewModel(UsersService usersService, 
+        public static RegisterViewModel LoadViewModel(MongoDBService usersService, 
                                                       UserStore userStore, 
                                                       MessageStore messageStore, 
                                                       INavigationService closeModalNavigationService,

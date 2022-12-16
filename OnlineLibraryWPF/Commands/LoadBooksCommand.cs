@@ -13,12 +13,12 @@ namespace OnlineLibraryWPF.Commands
     public class LoadBooksCommand : AsyncCommandBase
     {
         private BooksViewModel _viewModel;
-        private BooksService _booksService;
+        private MongoDBService _mongoDBService;
 
-        public LoadBooksCommand(BooksViewModel booksViewModel, BooksService booksService)
+        public LoadBooksCommand(BooksViewModel booksViewModel, MongoDBService mongoDBService)
         {
             _viewModel = booksViewModel;
-            _booksService = booksService;
+            _mongoDBService = mongoDBService;
         }
 
         public override async Task ExecuteAsync(object? parameter)
@@ -37,7 +37,7 @@ namespace OnlineLibraryWPF.Commands
             try
             {
                 _viewModel.Books.Clear();
-                List<Book> books = await _booksService.GetAllBooksAsync(searchString);
+                List<Book> books = await _mongoDBService.GetAllBooksAsync(searchString);
 
                 foreach (Book book in books)
                 {

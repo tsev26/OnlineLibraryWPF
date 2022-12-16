@@ -12,12 +12,12 @@ namespace OnlineLibraryWPF.Commands
     public class LoadRentalsCommand : AsyncCommandBase
     {
         private readonly RentalsViewModel _rentalsViewModel;
-        private readonly UsersService _usersService;
+        private readonly MongoDBService _mongoDBService;
 
-        public LoadRentalsCommand(RentalsViewModel rentalsViewModel, UsersService usersService)
+        public LoadRentalsCommand(RentalsViewModel rentalsViewModel, MongoDBService mongoDBService)
         {
             _rentalsViewModel = rentalsViewModel;
-            _usersService = usersService;
+            _mongoDBService = mongoDBService;
         }
 
         public async override Task ExecuteAsync(object? parameter)
@@ -26,7 +26,7 @@ namespace OnlineLibraryWPF.Commands
             ObjectId customerId = _rentalsViewModel.UserStore.Customer!.Id;
             bool type = _rentalsViewModel.Type;
 
-            _usersService.LoadRentalsForUser(customerId, type);
+            _mongoDBService.LoadRentalsForUser(customerId, type);
             //rentals = 
         }
     }
