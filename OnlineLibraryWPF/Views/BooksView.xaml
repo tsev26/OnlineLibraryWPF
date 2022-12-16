@@ -242,6 +242,7 @@
                         Header="Title" />
                     <DataGridTextColumn
                         Width="auto"
+                        MinWidth="100"
                         Binding="{Binding Author}"
                         FontSize="13"
                         Header="Author" />
@@ -249,12 +250,12 @@
                         Width="auto"
                         Binding="{Binding NumberOfPages}"
                         FontSize="13"
-                        Header="Number Of Pages" />
+                        Header="Pages" />
                     <DataGridTextColumn
                         Width="auto"
                         Binding="{Binding YearPublished}"
                         FontSize="13"
-                        Header="Year Published" />
+                        Header="Year" />
                     <DataGridTextColumn
                         Width="auto"
                         Binding="{Binding AvaibleLicences}"

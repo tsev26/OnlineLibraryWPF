@@ -8,12 +8,15 @@ using System.Threading.Tasks;
 using System;
 using DnsClient;
 using MongoDB.Bson;
+using OnlineLibraryWPF.ViewModels;
+using System.Net;
 
 namespace OnlineLibraryWPF.MongoDB
 {
     public class UsersService
     {
         private readonly IMongoCollection<User> _usersCollection;
+        private readonly IMongoCollection<Customer> _customersCollection;
 
         public UsersService(DatabaseSettings databaseSettings)
         {
@@ -24,6 +27,9 @@ namespace OnlineLibraryWPF.MongoDB
                 databaseSettings.DatabaseName);
 
             _usersCollection = mongoDatabase.GetCollection<User>(
+                databaseSettings.UsersCollectionName);
+
+            _customersCollection = mongoDatabase.GetCollection<Customer>(
                 databaseSettings.UsersCollectionName);
         }
 
@@ -123,6 +129,32 @@ namespace OnlineLibraryWPF.MongoDB
             FilterDefinition<User> filter = Builders<User>.Filter.Eq(x => x.Id, id);
             var update = Builders<User>.Update.Push("RentedBooks", rentedBook);
             await _usersCollection.FindOneAndUpdateAsync(filter, update);
+        }
+
+        public async Task LoadRentalsForUser(ObjectId id, bool type)
+        {
+
+            try
+            {
+                FilterDefinition<Customer> filter = Builders<Customer>.Filter.Eq(x => x.Id, id);
+                ProjectionDefinition<RentedBook> projection = Builders<RentedBook>.Projection.Include(x => x.BookRented).Exclude("_id");
+
+                var result = await _customersCollection
+                                   .Aggregate()
+                                   .Match(filter)
+                                   .Unwind<Customer, RentedBook>(x => x.RentedBooks)
+                                   .Project(key => key.BookId)
+                                   .ToListAsync();
+            }
+            catch (Exception e) 
+            {
+
+                throw e;
+            }
+
+
+            
+            //<List<RentalViewModel>>
         }
     }
 }

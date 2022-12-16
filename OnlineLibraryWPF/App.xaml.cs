@@ -46,7 +46,7 @@ namespace OnlineLibraryWPF
             services.AddTransient<CustomerMenuViewModel>(CreateCustomerMenuViewModel);
             services.AddTransient<LibrarianMenuViewModel>(CreateLibrarianMenuViewModel);
             services.AddTransient<RegisterViewModel>(CreateRegisterViewModel);
-            services.AddTransient<RentalsViewModel>();
+            services.AddTransient<RentalsViewModel>(CreateRentalsViewModel);
             services.AddTransient<BooksViewModel>(CreateBooksViewModel);
             services.AddTransient<BookAddEditViewModel>(CreateBookAddEditViewModel);
             services.AddTransient<CustomersViewModel>(CreateCustomersViewModel);
@@ -126,6 +126,17 @@ namespace OnlineLibraryWPF
                 CreateRentalsNavigationService(serviceProvider),
                 CreateBookAddEditNavigationService(serviceProvider),
                 CreateBooksNavigationService(serviceProvider));
+        }
+
+        private RentalsViewModel CreateRentalsViewModel(IServiceProvider serviceProvider)
+        {
+            return RentalsViewModel.LoadViewModel(
+                serviceProvider.GetRequiredService<UserStore>(),
+                serviceProvider.GetRequiredService<BooksService>(),
+                serviceProvider.GetRequiredService<UsersService>(),
+                serviceProvider.GetRequiredService<MessageStore>(),
+                CreateLibrarianMenuNavigationService(serviceProvider),
+                CreateCustomerMenuNavigationService(serviceProvider));
         }
 
         private INavigationService CreateRentalsNavigationService(IServiceProvider serviceProvider)

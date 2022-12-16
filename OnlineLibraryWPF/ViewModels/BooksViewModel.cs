@@ -17,13 +17,11 @@ namespace OnlineLibraryWPF.ViewModels
     {
         public ICommand NavigateLibrarianMenuCommand { get; }
         public ICommand NavigateCustomerMenuCommand { get; }
-        
         public ICommand NavigateAddBookCommand { get; }
         public ICommand NavigateEditBookCommand { get; }
         public ICommand NavigateRentalsCommand { get; }
         public ICommand RentBookCommand { get; }
         public ICommand LoadBooksCommand { get; }
-
         public ICommand DeleteBookCommand { get; }
 
         public bool IsLoading { get; set; }
