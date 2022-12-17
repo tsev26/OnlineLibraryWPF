@@ -9,9 +9,14 @@ using System.Threading.Tasks;
 
 namespace OnlineLibraryWPF.Models
 {
+    [BsonIgnoreExtraElements]
     public class Book
     {
-        public Book(string title, string author, int numberOfPages, int yearPublished, byte[] picture, int totalLicences)
+        public Book() 
+        {
+            //RentedBooks = new List<RentedBook>();
+        }
+        public Book(string title, string author, int numberOfPages, int yearPublished, byte[] picture, int totalLicences) : base()
         {
             Title = title;
             Author = author;
@@ -30,7 +35,5 @@ namespace OnlineLibraryWPF.Models
         public int YearPublished { get; set; }
         public byte[] Picture { get; set; } //GridFS
         public int TotalLicences { get; set; }
-        public int RentedLicences { get; set; }
-        public int AvaibleLicences => TotalLicences - RentedLicences;
     }
 }

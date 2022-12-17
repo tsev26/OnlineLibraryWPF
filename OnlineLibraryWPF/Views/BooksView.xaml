@@ -48,6 +48,7 @@
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
@@ -87,6 +88,7 @@
                 Style="{StaticResource ViewButton}"
                 Visibility="{Binding IsBookSelectedForLibrarian, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
+            <!--
             <Button
                 Grid.Column="5"
                 Margin="1,0"
@@ -94,10 +96,12 @@
                 Content="View Rented Books"
                 Style="{StaticResource ViewButton}"
                 Visibility="{Binding IsBookSelectedForLibrarian, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            -->
 
             <Button
                 Grid.Column="6"
-                Margin="1,0"
+                Margin="45,0"
+                MinWidth="120"
                 Command="{Binding RentBookCommand}"
                 Content="Rent"
                 Style="{StaticResource ViewButton}"
@@ -136,79 +140,7 @@
                 IsReadOnly="True"
                 ItemsSource="{Binding Books, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                 SelectedItem="{Binding UserStore.Book}"
-                SelectionMode="Single"
-                Visibility="{Binding UserStore.IsLoggedInLibrarian, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Width="60" Header="Picture">
-                        <DataGridTextColumn.CellStyle>
-                            <Style TargetType="DataGridCell">
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="DataGridCell">
-                                            <Grid>
-                                                <ContentPresenter
-                                                    Margin="20,0,0,0"
-                                                    HorizontalAlignment="Left"
-                                                    VerticalAlignment="Center" />
-                                                <Image
-                                                    Grid.Column="0"
-                                                    Width="60"
-                                                    Height="80"
-                                                    HorizontalAlignment="Left"
-                                                    Source="{Binding Picture, Converter={StaticResource ImageConverter}}"
-                                                    Stretch="Fill" />
-                                            </Grid>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </DataGridTextColumn.CellStyle>
-                    </DataGridTextColumn>
-                    <DataGridTextColumn
-                        Width="*"
-                        Binding="{Binding Title}"
-                        FontSize="13"
-                        Header="Title" />
-                    <DataGridTextColumn
-                        Width="auto"
-                        Binding="{Binding Author}"
-                        FontSize="13"
-                        Header="Author" />
-                    <DataGridTextColumn
-                        Width="auto"
-                        Binding="{Binding NumberOfPages}"
-                        FontSize="13"
-                        Header="Number Of Pages" />
-                    <DataGridTextColumn
-                        Width="auto"
-                        Binding="{Binding YearPublished}"
-                        FontSize="13"
-                        Header="Year Published" />
-                    <DataGridTextColumn
-                        Width="auto"
-                        Binding="{Binding TotalLicences}"
-                        FontSize="13"
-                        Header="Total Licences" />
-                    <DataGridTextColumn
-                        Width="auto"
-                        Binding="{Binding AvaibleLicences}"
-                        FontSize="13"
-                        Header="Avaible Licences" />
-                </DataGrid.Columns>
-            </DataGrid>
-
-            <DataGrid
-                AutoGenerateColumns="false"
-                CanUserReorderColumns="False"
-                CanUserResizeColumns="False"
-                CanUserResizeRows="False"
-                FontSize="14"
-                FontWeight="SemiBold"
-                IsReadOnly="True"
-                ItemsSource="{Binding Books, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                SelectedItem="{Binding UserStore.Book}"
-                SelectionMode="Single"
-                Visibility="{Binding UserStore.IsLoggedInCustomer, Converter={StaticResource BooleanToVisibilityConverter}}">
+                SelectionMode="Single">
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="60" Header="Picture">
                         <DataGridTextColumn.CellStyle>
@@ -258,14 +190,17 @@
                         Header="Year" />
                     <DataGridTextColumn
                         Width="auto"
+                        Binding="{Binding TotalLicences}"
+                        FontSize="13"
+                        Header="Total" />
+                    <DataGridTextColumn
+                        Width="auto"
                         Binding="{Binding AvaibleLicences}"
                         FontSize="13"
-                        Header="Avaible Licences" />
+                        Header="Available" />
                 </DataGrid.Columns>
             </DataGrid>
+
         </Grid>
-
-
-
     </Grid>
 </UserControl>

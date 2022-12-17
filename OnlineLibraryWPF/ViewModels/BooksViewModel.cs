@@ -50,7 +50,7 @@ namespace OnlineLibraryWPF.ViewModels
 
         public bool IsBookSelectedForLibrarian => IsBookSelected && UserStore.IsLoggedInLibrarian;
 
-        public bool IsBookSelectedForCustomer => IsBookSelected && UserStore.IsLoggedInCustomer;
+        public bool IsBookSelectedForCustomer => IsBookSelected && UserStore.Customer != null;
 
         public BooksViewModel(UserStore userStore,
                               MongoDBService mongoDBService,
@@ -114,7 +114,7 @@ namespace OnlineLibraryWPF.ViewModels
                                                           navigateAddUpdateBookCommand,
                                                           navigateBooksNavigationService);
 
-            viewModel.Books = new ObservableCollection<Book>();
+            viewModel.Books = new ObservableCollection<BookViewModel>();
 
             viewModel.LoadBooksCommand.Execute(null);
 
@@ -122,7 +122,7 @@ namespace OnlineLibraryWPF.ViewModels
         }
 
 
-        public ObservableCollection<Book> Books { get; set; }
+        public ObservableCollection<BookViewModel> Books { get; set; }
 
     }
 }

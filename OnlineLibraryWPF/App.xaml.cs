@@ -112,7 +112,8 @@ namespace OnlineLibraryWPF
                 serviceProvider.GetRequiredService<MessageStore>(),
                 CreateLibrarianMenuNavigationService(serviceProvider),
                 CreateRegisterNavigationService(serviceProvider),
-                CreateRentalsNavigationService(serviceProvider));
+                CreateRentalsNavigationService(serviceProvider),
+                CreateBooksNavigationService(serviceProvider));
         }
 
         private BooksViewModel CreateBooksViewModel(IServiceProvider serviceProvider)
@@ -200,7 +201,7 @@ namespace OnlineLibraryWPF
 
 
             return BookAddEditViewModel.LoadViewModel(
-                serviceProvider.GetRequiredService<BooksService>(),
+                serviceProvider.GetRequiredService<MongoDBService>(),
                 serviceProvider.GetRequiredService<MessageStore>(),
                 serviceProvider.GetRequiredService<UserStore>(),
                 serviceProvider.GetRequiredService<CloseModalNavigationService>(),

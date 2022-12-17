@@ -13,14 +13,14 @@ namespace OnlineLibraryWPF.Commands
     public class BanUserCommand : AsyncCommandBase
     {
         private readonly UserStore _userStore;
-        private readonly MongoDBService _usersService;
+        private readonly MongoDBService _mongoDBService;
         private readonly MessageStore _messageStore;
         private readonly CustomersViewModel _customersViewModel;
 
-        public BanUserCommand(UserStore userStore, MongoDBService usersService, MessageStore messageStore, CustomersViewModel customersViewModel)
+        public BanUserCommand(UserStore userStore, MongoDBService mongoDBService, MessageStore messageStore, CustomersViewModel customersViewModel)
         {
             _userStore = userStore;
-            _usersService = usersService;
+            _mongoDBService = mongoDBService;
             _messageStore = messageStore;
             _customersViewModel = customersViewModel;
         }
@@ -32,7 +32,7 @@ namespace OnlineLibraryWPF.Commands
                 _messageStore.Message = "First select customer to ban!";
                 return;
             }
-            await _usersService.BanUser(_userStore.Customer.Id, !_userStore.Customer.IsBanned);
+            await _mongoDBService.BanUser(_userStore.Customer.Id, !_userStore.Customer.IsBanned);
 
             _messageStore.Message = "Customer " + _userStore.Customer.LoginName + (!_userStore.Customer.IsBanned ? " banned" : " unbanned") + "!";
             //_userStore.Customer.IsBanned = !_userStore.Customer.IsBanned;

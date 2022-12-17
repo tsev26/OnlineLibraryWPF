@@ -24,25 +24,30 @@ namespace OnlineLibraryWPF.ViewModels
         public UserStore UserStore { get; set; }
         public MessageStore MessageStore { get; set; }
 
-        public bool IsBookSelected => UserStore.Book != null;
+        public bool IsBookSelected => SelectedRental != null && Type;
 
         public string RentalsForCustomer { get; set; }
 
-        public RentalViewModel SelectedRental { get; set; }
 
-        private string _loadRentalsNameButton;
-        public string LoadRentalsNameButton
+        private RentalViewModel _selectedRental;
+        public RentalViewModel SelectedRental
         {
             get
             {
-                return _loadRentalsNameButton;
+                return _selectedRental;
             }
             set
             {
-                _loadRentalsNameButton = value;
-                OnPropertyChanged(nameof(LoadRentalsNameButton));
+                _selectedRental = value;
+                OnPropertyChanged(nameof(SelectedRental));
+                OnPropertyChanged(nameof(IsBookSelected));
             }
         }
+
+
+
+        public string LoadRentalsNameButton => Type ? "Show returned rentals" : "Show current rentals";
+
 
         private bool _type;
         public bool Type
@@ -55,8 +60,12 @@ namespace OnlineLibraryWPF.ViewModels
             {
                 _type = value;
                 OnPropertyChanged(nameof(Type));
+                OnPropertyChanged(nameof(LoadRentalsNameButton));
+                OnPropertyChanged(nameof(IsBookSelected));
             }
         }
+
+        public string ColumnName => Type ? "Returned" : "Expire";
 
         public RentalsViewModel(UserStore userStore,
                               MongoDBService mongoDBService,
@@ -71,7 +80,7 @@ namespace OnlineLibraryWPF.ViewModels
             NavigateCustomerMenuCommand = new NavigateCommand(navigateCustomerMenuCommand);
 
             LoadRentalsCommand = new LoadRentalsCommand(this, mongoDBService);
-            ReturnBookCommand = new ReturnBookCommand();
+            ReturnBookCommand = new ReturnBookCommand(this, mongoDBService, messageStore);
 
             MessageStore.MessageChanged += MessageStore_MessageChanged;
             UserStore.BookChanged += UserStore_BookChanged;
@@ -108,6 +117,7 @@ namespace OnlineLibraryWPF.ViewModels
 
             viewModel.Rentals = new ObservableCollection<RentalViewModel>();
             viewModel.RentalsForCustomer = "Rentals of " + userStore.Customer.LoginName;
+            //viewModel.Type = false;
             viewModel.LoadRentalsCommand.Execute(null);
 
             return viewModel;

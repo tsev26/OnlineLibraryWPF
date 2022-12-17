@@ -10,20 +10,20 @@ namespace OnlineLibraryWPF.Commands
 {
     public class LoadInfoAbouCustomerCommand : AsyncCommandBase
     {
-        private readonly MongoDBService _usersService;
+        private readonly MongoDBService _mongoDBService;
         private readonly MessageStore _messageStore;
         private readonly UserStore _userStore;
 
-        public LoadInfoAbouCustomerCommand(MongoDBService usersService, UserStore userStore, MessageStore messageStore)
+        public LoadInfoAbouCustomerCommand(MongoDBService mongoDBService, UserStore userStore, MessageStore messageStore)
         {
-            _usersService = usersService;
+            _mongoDBService = mongoDBService;
             _messageStore = messageStore;
             _userStore = userStore;
         }
 
         public async override Task ExecuteAsync(object? parameter)
         {
-            long numberOfRentalsCustomers = await _usersService.GetNumberOfRentalsCustomerAsync(_userStore.Customer.Id);
+            long numberOfRentalsCustomers = await _mongoDBService.GetNumberOfRentalsCustomerAsync(_userStore.Customer.Id);
             _messageStore.Message = "Currently rented " + numberOfRentalsCustomers + " books!";
         }
     }

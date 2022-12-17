@@ -37,13 +37,12 @@ namespace OnlineLibraryWPF.Commands
             try
             {
                 _viewModel.Books.Clear();
-                List<Book> books = await _mongoDBService.GetAllBooksAsync(searchString);
-
-                foreach (Book book in books)
+                List<BookViewModel> books = await _mongoDBService.GetAllBooksAsync(searchString);
+                
+                foreach (var book in books)
                 {
                     _viewModel.Books.Add(book);
                 }
-
             }
             catch (Exception ex)
             {

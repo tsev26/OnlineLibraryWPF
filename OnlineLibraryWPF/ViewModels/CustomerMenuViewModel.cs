@@ -25,7 +25,7 @@ namespace OnlineLibraryWPF.ViewModels
 
         public CustomerMenuViewModel(UserStore userStore,
                                      MessageStore messageStore,
-                                     MongoDBService usersService,
+                                     MongoDBService mongoDBService,
                                      INavigationService navigateHomeCommand,
                                      INavigationService navigateBooksCommand,
                                      INavigationService navigateRentalsCommand,
@@ -36,7 +36,7 @@ namespace OnlineLibraryWPF.ViewModels
             LogoutCommand = new LogoutCommand(navigateHomeCommand, userStore);
             NavigateBooksCommand = new NavigateCommand(navigateBooksCommand);
             NavigateRentalsCommand = new NavigateCommand(navigateRentalsCommand);
-            LoadInfoAbouCustomerCommand = new LoadInfoAbouCustomerCommand(usersService, userStore, messageStore);
+            LoadInfoAbouCustomerCommand = new LoadInfoAbouCustomerCommand(mongoDBService, userStore, messageStore);
             NavigateEditCommand = new NavigateCommand(navigateRegisterCommand);
 
             MessageStore.MessageChanged += MessageStore_MessageChanged;
@@ -55,7 +55,7 @@ namespace OnlineLibraryWPF.ViewModels
 
         public static CustomerMenuViewModel LoadViewModel(UserStore userStore,
                                      MessageStore messageStore,
-                                     MongoDBService usersService,
+                                     MongoDBService mongoDBService,
                                      INavigationService navigateHomeCommand,
                                      INavigationService navigateBooksCommand,
                                      INavigationService navigateRentalsCommand,
@@ -63,7 +63,7 @@ namespace OnlineLibraryWPF.ViewModels
         {
             CustomerMenuViewModel viewModel = new CustomerMenuViewModel(userStore,
                                                                         messageStore,
-                                                                        usersService,
+                                                                        mongoDBService,
                                                                         navigateHomeCommand,
                                                                         navigateBooksCommand,
                                                                         navigateRentalsCommand,

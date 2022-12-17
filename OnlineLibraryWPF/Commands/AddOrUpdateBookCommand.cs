@@ -13,19 +13,19 @@ namespace OnlineLibraryWPF.Commands
 {
     public class AddOrUpdateBookCommand : AsyncCommandBase
     {
-        private BooksService _booksService;
+        private MongoDBService _mongoDBService;
         private UserStore _userStore;
         private MessageStore _messageStore;
         private INavigationService _closeModalNavigationService;
         private BookAddEditViewModel _bookAddEditViewModel;
 
-        public AddOrUpdateBookCommand(BooksService booksService, 
+        public AddOrUpdateBookCommand(MongoDBService mongoDBService, 
                                       UserStore userStore, 
                                       MessageStore messageStore, 
                                       INavigationService closeModalNavigationService,
                                       BookAddEditViewModel bookAddEditViewModel)
         {
-            _booksService = booksService;
+            _mongoDBService = mongoDBService;
             _userStore = userStore;
             _messageStore = messageStore;
             _closeModalNavigationService = closeModalNavigationService;
@@ -74,7 +74,7 @@ namespace OnlineLibraryWPF.Commands
 
             if (_userStore.Book == null)
             {
-                await _booksService.CreateAsync(book);
+                await _mongoDBService.CreateBookAsync(book);
 
                 _messageStore.Message = "Book added!";
             }
@@ -82,7 +82,7 @@ namespace OnlineLibraryWPF.Commands
             {
                 book.Id = _userStore.Book.Id;
 
-                await _booksService.UpdateAsync(_userStore.Book.Id, book);
+                await _mongoDBService.UpdateBookAsync(_userStore.Book.Id, book);
 
                 _messageStore.Message = "Book upadated!";
             }

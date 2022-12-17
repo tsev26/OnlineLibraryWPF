@@ -74,9 +74,9 @@ namespace OnlineLibraryWPF.MongoDB
             await _usersCollection.ReplaceOneAsync(filter, updatedUser);
         }
             
-
         public async Task RemoveAsync(ObjectId id) =>
             await _usersCollection.DeleteOneAsync(x => x.Id == id);
+
 
         public async Task<bool> CheckUserWithLoginExists(string? loginName) => 
             await _usersCollection.Find(x => x.LoginName == loginName ).FirstOrDefaultAsync() != null;
@@ -87,8 +87,6 @@ namespace OnlineLibraryWPF.MongoDB
             UpdateDefinition<User> update = Builders<User>.Update.Set("IsBanned", value);
             await _usersCollection.UpdateOneAsync(filter, update);
         }
-
-
 
         public async Task ApproveUser(ObjectId? id, bool value)
         {
@@ -103,58 +101,5 @@ namespace OnlineLibraryWPF.MongoDB
             return await _usersCollection.CountDocumentsAsync(filter);
         }
 
-        public async Task<long> GetNumberOfRentalsCustomerAsync(ObjectId? id)
-        {
-            FilterDefinition<User> filter = Builders<User>.Filter.Eq(x => x.Id, id); 
-            ProjectionDefinition<User> projection = Builders<User>.Projection.Include("RentedBooks").Exclude("_id");
-
-            AggregateCountResult result = await _usersCollection.Aggregate()
-                            .Match(filter)
-                            .Project(projection)
-                            .Unwind("RentedBooks")
-                            .Count()
-                            .FirstOrDefaultAsync();
-
-            long count = 0;
-            if (result != null)
-            {
-                count = result.Count;
-            }
-
-            return count;
-        }
-
-        public async Task RentBook(ObjectId id, RentedBook rentedBook)
-        {
-            FilterDefinition<User> filter = Builders<User>.Filter.Eq(x => x.Id, id);
-            var update = Builders<User>.Update.Push("RentedBooks", rentedBook);
-            await _usersCollection.FindOneAndUpdateAsync(filter, update);
-        }
-
-        public async Task LoadRentalsForUser(ObjectId id, bool type)
-        {
-
-            try
-            {
-                FilterDefinition<Customer> filter = Builders<Customer>.Filter.Eq(x => x.Id, id);
-                ProjectionDefinition<RentedBook> projection = Builders<RentedBook>.Projection.Include(x => x.BookRented).Exclude("_id");
-
-                var result = await _customersCollection
-                                   .Aggregate()
-                                   .Match(filter)
-                                   .Unwind<Customer, RentedBook>(x => x.RentedBooks)
-                                   .Project(key => key.BookId)
-                                   .ToListAsync();
-            }
-            catch (Exception e) 
-            {
-
-                throw e;
-            }
-
-
-            
-            //<List<RentalViewModel>>
-        }
     }
 }

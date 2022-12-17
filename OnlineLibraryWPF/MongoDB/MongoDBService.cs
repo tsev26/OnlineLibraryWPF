@@ -1,11 +1,16 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using OnlineLibraryWPF.Models;
+using OnlineLibraryWPF.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media.Media3D;
 
 namespace OnlineLibraryWPF.MongoDB
 {
@@ -40,40 +45,45 @@ namespace OnlineLibraryWPF.MongoDB
         public async Task RemoveBookAsync(ObjectId id) =>
             await _booksCollection.DeleteOneAsync(x => x.Id == id);
 
-        public async Task<List<Book>> GetAllBooksAsync(string searchString, bool onlyAvailable = false)
+        public async Task<List<BookViewModel>> GetAllBooksAsync(string searchString, bool onlyAvailable = false)
         {
-            FilterDefinition<Book> filter = Builders<Book>.Filter.Empty;
-            if (searchString.Length >= 3)
+            try
             {
-                BsonRegularExpression reg = new BsonRegularExpression(searchString, "i");
-                filter &= Builders<Book>.Filter.Or(
-                                    Builders<Book>.Filter.Regex("Title", reg),
-                                    Builders<Book>.Filter.Regex("Author", reg),
-                                    Builders<Book>.Filter.Regex("YearPublished", reg)
-                                    );
+                FilterDefinition<Book> filter = Builders<Book>.Filter.Empty;
+                if (searchString.Length >= 3)
+                {
+                    BsonRegularExpression reg = new BsonRegularExpression(searchString, "i");
+                    filter &= Builders<Book>.Filter.Or(
+                                        Builders<Book>.Filter.Regex(x => x.Title, reg),
+                                        Builders<Book>.Filter.Regex(x => x.Author, reg),
+                                        Builders<Book>.Filter.Regex(x => x.YearPublished, reg)
+                                        );
+                }
+                List<BookViewModel> books = await _booksCollection.Aggregate()
+                                                        .Match(filter)
+                                                        .Lookup< Book, RentedBook, BookViewModel>(
+                                                               _rentedBooksCollection,
+                                                               localField => localField.Id,
+                                                               foreignField => foreignField.BookId,
+                                                               (BookViewModel output) => output.RentedBooks)
+                                                        //.Unwind(p => BsonSerializer.Deserialize<RentedBook>(p.RentedBooks)).ToList(), new AggregateUnwindOptions<BookViewModel>( ) { PreserveNullAndEmptyArrays = true })
+                                                        //.Group(x => x.Id, g => new { ResultCount = g.Count() })
+                                                        .ToListAsync();
+
+
+                return books;
             }
-            return await _booksCollection.Find(filter).ToListAsync();
+            catch (Exception e)
+            {
+
+                throw e;
+            }
         }
 
-        //TODO
-        //wrong
-        public async Task<bool> CheckIfRented(ObjectId id)
+        public async Task<bool> CheckIfRented(ObjectId bookId)
         {
-            FilterDefinition<Book> filter = Builders<Book>.Filter.Eq(x => x.Id, id);
-            ProjectionDefinition<Book> projection = Builders<Book>.Projection.Include("RentedBooks").Exclude("_id");
-
-            AggregateCountResult result = await _booksCollection.Aggregate()
-                            .Match(filter)
-                            .Project(projection)
-                            .Unwind("RentedBooks")
-                            .Count()
-                            .FirstOrDefaultAsync();
-            long count = 0;
-            if (result != null)
-            {
-                count = result.Count;
-            }
-            return count > 0;
+            FilterDefinition<RentedBook> filter = Builders<RentedBook>.Filter.Eq(x => x.BookId, bookId) & Builders<RentedBook>.Filter.Eq(x => x.BookReturned, null);
+            return await _rentedBooksCollection.CountDocumentsAsync(filter) > 0;
         }
 
         public async Task<RentedBook?> GetRentedBookAsync(ObjectId id) =>
@@ -127,7 +137,6 @@ namespace OnlineLibraryWPF.MongoDB
             await _usersCollection.ReplaceOneAsync(filter, updatedUser);
         }
 
-
         public async Task RemoveUserAsync(ObjectId id) =>
             await _usersCollection.DeleteOneAsync(x => x.Id == id);
 
@@ -154,63 +163,52 @@ namespace OnlineLibraryWPF.MongoDB
             return await _usersCollection.CountDocumentsAsync(filter);
         }
 
-        //TODO
-        //wrong - must take from rentalbookscollection
-        public async Task<long> GetNumberOfRentalsCustomerAsync(ObjectId? id)
+        public async Task<long> GetNumberOfRentalsCustomerAsync(ObjectId? customerId)
         {
-            FilterDefinition<User> filter = Builders<User>.Filter.Eq(x => x.Id, id);
-            ProjectionDefinition<User> projection = Builders<User>.Projection.Include("RentedBooks").Exclude("_id");
-
-            AggregateCountResult result = await _usersCollection.Aggregate()
-                            .Match(filter)
-                            .Project(projection)
-                            .Unwind("RentedBooks")
-                            .Count()
-                            .FirstOrDefaultAsync();
-
-            long count = 0;
-            if (result != null)
-            {
-                count = result.Count;
-            }
-
-            return count;
+            FilterDefinition<RentedBook> filter = Builders<RentedBook>.Filter.Eq(x => x.CustomerId, customerId) & Builders<RentedBook>.Filter.Eq(x => x.BookReturned, null);
+            return await _rentedBooksCollection.CountDocumentsAsync(filter);
         }
 
-
-        public async Task RentBook(ObjectId id, RentedBook rentedBook)
+        public async Task<List<RentalViewModel>> GetRentalsCustomerAsync(ObjectId customerId, bool rented = true)
         {
-            FilterDefinition<User> filter = Builders<User>.Filter.Eq(x => x.Id, id);
-            var update = Builders<User>.Update.Push("RentedBooks", rentedBook);
-            await _usersCollection.FindOneAndUpdateAsync(filter, update);
-        }
-
-        //TODO
-        public async Task LoadRentalsForUser(ObjectId id, bool type)
-        {
-
             try
             {
-                FilterDefinition<Customer> filter = Builders<Customer>.Filter.Eq(x => x.Id, id);
-                ProjectionDefinition<RentedBook> projection = Builders<RentedBook>.Projection.Include(x => x.BookRented).Exclude("_id");
+                FilterDefinition<RentedBook> filter = Builders<RentedBook>.Filter.Eq(x => x.CustomerId, customerId);
+                
+                FilterDefinition<RentedBook> filter2 ;
+                if (rented)
+                {
+                    filter2 = Builders<RentedBook>.Filter.Eq(x => x.BookReturned, null);
+                }
+                else
+                {
+                    filter2 = Builders<RentedBook>.Filter.Ne(x => x.BookReturned, null);
+                }
+                filter = filter & filter2;
+               
+                List<RentalViewModel> rents = await _rentedBooksCollection
+                                                    .Aggregate()
+                                                    .Match(filter)
+                                                    .Lookup<RentedBook, Book, RentalViewModel>(
+                                                        _booksCollection,
+                                                        localField => localField.BookId,
+                                                        foreignField => foreignField.Id,
+                                                        (RentalViewModel p) => p.Book)
+                                                    .Lookup<RentalViewModel, Customer, RentalViewModel>(
+                                                        _customersCollection,
+                                                        localField => localField.CustomerId,
+                                                        foreignField => foreignField.Id,
+                                                        (RentalViewModel p) => p.Customer)
+                                                    .Unwind(p => p.Book, new AggregateUnwindOptions<RentalViewModel>() { PreserveNullAndEmptyArrays = true })
+                                                    .Unwind(p => p.Customer, new AggregateUnwindOptions<RentalViewModel>() { PreserveNullAndEmptyArrays = true })
+                                                    .ToListAsync();
 
-                var result = await _customersCollection
-                                   .Aggregate()
-                                   .Match(filter)
-                                   .Unwind<Customer, RentedBook>(x => x.RentedBooks)
-                                   .Project(key => key.BookId)
-                                   .ToListAsync();
+                return rents;
             }
             catch (Exception e)
             {
-
                 throw e;
             }
-
-
-
-            //<List<RentalViewModel>>
         }
-
     }
 }

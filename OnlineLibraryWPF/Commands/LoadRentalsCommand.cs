@@ -22,12 +22,18 @@ namespace OnlineLibraryWPF.Commands
 
         public async override Task ExecuteAsync(object? parameter)
         {
-            List<RentalViewModel> rentals = new List<RentalViewModel>();
             ObjectId customerId = _rentalsViewModel.UserStore.Customer!.Id;
+            _rentalsViewModel.Type = !_rentalsViewModel.Type;
             bool type = _rentalsViewModel.Type;
 
-            _mongoDBService.LoadRentalsForUser(customerId, type);
-            //rentals = 
+            List<RentalViewModel> rentals = await _mongoDBService.GetRentalsCustomerAsync(customerId, type);
+
+            _rentalsViewModel.Rentals.Clear();
+            foreach (var rent in rentals)
+            {
+                _rentalsViewModel.Rentals.Add(rent);
+            }
+            
         }
     }
 }

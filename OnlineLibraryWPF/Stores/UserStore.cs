@@ -1,4 +1,5 @@
 ﻿using OnlineLibraryWPF.Models;
+using OnlineLibraryWPF.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,8 +43,8 @@ namespace OnlineLibraryWPF.Stores
             }
         }
 
-        private Book? _book;
-        public Book? Book
+        private BookViewModel? _book;
+        public BookViewModel? Book
         {
             get
             {

@@ -22,7 +22,6 @@ namespace OnlineLibraryWPF.Models
             Address = address;
             IsApproved = false;
             IsBanned = false;
-            RentedBooks = new List<RentedBook>();
         }
 
         public Customer(string loginName, string password,
@@ -37,7 +36,6 @@ namespace OnlineLibraryWPF.Models
             Address = address;
             IsApproved = isApproved;
             IsBanned = false;
-            RentedBooks = new List<RentedBook>();
         }
 
         public string FirstName { get; set; }
@@ -50,6 +48,5 @@ namespace OnlineLibraryWPF.Models
         public string IsApprovedString => IsApproved ? "Yes" : "No";
 
         public string IsBannedString => IsBanned ? "Yes" : "No";
-        public virtual List<RentedBook> RentedBooks { get; set; }
     }
 }

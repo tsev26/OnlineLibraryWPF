@@ -110,7 +110,7 @@ namespace OnlineLibraryWPF.ViewModels
 
         public UserStore UserStore { get; set; }
 
-        public BookAddEditViewModel(BooksService booksService, 
+        public BookAddEditViewModel(MongoDBService mongoDBService, 
                                     MessageStore messageStore,
                                     UserStore userStore,
                                     INavigationService closeModalNavigationService,
@@ -119,7 +119,7 @@ namespace OnlineLibraryWPF.ViewModels
             MessageStore = messageStore;
             UserStore = userStore;
 
-            AddOrUpdateBookCommand = new AddOrUpdateBookCommand(booksService, userStore, messageStore, closeModalAndReloadCustomersNavigationService, this);
+            AddOrUpdateBookCommand = new AddOrUpdateBookCommand(mongoDBService, userStore, messageStore, closeModalAndReloadCustomersNavigationService, this);
             CloseModalCommand = new NavigateCommand(closeModalNavigationService);
             SelectImgCommand = new SelectImgCommand(this);
             MessageStore = messageStore;
@@ -127,13 +127,13 @@ namespace OnlineLibraryWPF.ViewModels
             MessageStore.ModalMessageChanged += MessageStore_ModalMessageChanged;
         }
 
-        public static BookAddEditViewModel LoadViewModel(BooksService booksService,
+        public static BookAddEditViewModel LoadViewModel(MongoDBService mongoDBService,
                                     MessageStore messageStore,
                                     UserStore userStore,
                                     INavigationService closeModalNavigationService,
                                     INavigationService closeModalAndReloadBooksNavigationService)
         {
-            BookAddEditViewModel view = new BookAddEditViewModel(booksService, messageStore, userStore, closeModalNavigationService, closeModalAndReloadBooksNavigationService);
+            BookAddEditViewModel view = new BookAddEditViewModel(mongoDBService, messageStore, userStore, closeModalNavigationService, closeModalAndReloadBooksNavigationService);
 
             if (userStore.Book != null)
             {

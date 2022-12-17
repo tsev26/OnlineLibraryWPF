@@ -13,7 +13,6 @@ namespace OnlineLibraryWPF.ViewModels
     {
         public ViewModelBase ContentViewModel { get; }
         public ICommand NavigateHomeCommand { get; }
-        public string ContentViewModelTitle => ContentViewModel.Name;
 
         public LayoutViewModel(INavigationService homeNavigationService, ViewModelBase contentViewModel)
         {

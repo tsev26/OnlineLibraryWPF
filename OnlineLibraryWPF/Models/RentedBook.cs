@@ -34,6 +34,7 @@ namespace OnlineLibraryWPF.Models
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime? BookReturned { get; set; }
 
+        [BsonIgnore]
         public DateTime BookRentedTo => BookRented.Add(MAXDAYSRENTED);
     }
 }

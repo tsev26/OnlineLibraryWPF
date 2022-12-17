@@ -15,11 +15,11 @@ namespace OnlineLibraryWPF.Commands
     public class LoadCustomersCommand : AsyncCommandBase
     {
         private readonly CustomersViewModel _viewModel;
-        private readonly MongoDBService _usersService;
-        public LoadCustomersCommand(CustomersViewModel viewModel, MongoDBService usersService)
+        private readonly MongoDBService _mongoDBService;
+        public LoadCustomersCommand(CustomersViewModel viewModel, MongoDBService mongoDBService)
         {
             _viewModel = viewModel;
-            _usersService = usersService;
+            _mongoDBService = mongoDBService;
         }
 
         public async override Task ExecuteAsync(object? parameter)
@@ -38,7 +38,7 @@ namespace OnlineLibraryWPF.Commands
             try
             {
                 _viewModel.Customers.Clear();
-                List<User> cust = await _usersService.GetAllCustomersAsync(searchString);
+                List<User> cust = await _mongoDBService.GetAllCustomersAsync(searchString);
 
                 foreach (User user in cust)
                 {

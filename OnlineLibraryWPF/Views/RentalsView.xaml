@@ -16,6 +16,7 @@
         <converters:ImageToBitmapSourceConverter x:Key="ImageConverter" />
     </UserControl.Resources>
 
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -23,6 +24,8 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+
+        <FrameworkElement x:Name="ColumnName" DataContext="{Binding ColumnName}" />
 
         <TextBlock
             Grid.Row="0"
@@ -131,30 +134,16 @@
                         Header="Title" />
                     <DataGridTextColumn
                         Width="auto"
-                        MinWidth="100"
-                        Binding="{Binding Book.Author}"
-                        FontSize="13"
-                        Header="Author" />
-                    <DataGridTextColumn
-                        Width="auto"
-                        Binding="{Binding Book.NumberOfPages}"
-                        FontSize="13"
-                        Header="Pages" />
-                    <DataGridTextColumn
-                        Width="auto"
-                        Binding="{Binding Book.YearPublished}"
-                        FontSize="13"
-                        Header="Year" />
-                    <DataGridTextColumn
-                        Width="auto"
-                        Binding="{Binding RentedFrom}"
+                        MinWidth="110"
+                        Binding="{Binding BookRented, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"
                         FontSize="13"
                         Header="Rented From" />
                     <DataGridTextColumn
                         Width="auto"
-                        Binding="{Binding Returned}"
+                        MinWidth="110"
+                        Binding="{Binding BookReturnedOrExpire, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"
                         FontSize="13"
-                        Header="Returned" />
+                        Header="Returned/Expires" />
                 </DataGrid.Columns>
             </DataGrid>
 

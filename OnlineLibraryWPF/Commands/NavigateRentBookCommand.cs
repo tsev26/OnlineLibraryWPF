@@ -1,6 +1,5 @@
 ﻿using OnlineLibraryWPF.Services;
 using OnlineLibraryWPF.Stores;
-using OnlineLibraryWPF.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,21 +8,21 @@ using System.Threading.Tasks;
 
 namespace OnlineLibraryWPF.Commands
 {
-    public class NavigateAddBookCommand : CommandBase
+    public class NavigateRentBookCommand : CommandBase
     {
-        private readonly INavigationService _navigateAddUpdateBookCommand;
+        private readonly INavigationService _navigateRentBookCommand;
         private readonly UserStore _userStore;
 
-        public NavigateAddBookCommand(INavigationService navigateAddUpdateBookCommand, UserStore userStore)
+        public NavigateRentBookCommand(INavigationService navigateRentBookCommand, UserStore userStore)
         {
+            _navigateRentBookCommand = navigateRentBookCommand;
             _userStore = userStore;
-            _navigateAddUpdateBookCommand = navigateAddUpdateBookCommand;
         }
 
         public override void Execute(object? parameter)
         {
             _userStore.Book = null;
-            _navigateAddUpdateBookCommand.Navigate();
+            _navigateRentBookCommand.Navigate("Rent book for customer " + _userStore.Customer.LoginName);
         }
     }
 }

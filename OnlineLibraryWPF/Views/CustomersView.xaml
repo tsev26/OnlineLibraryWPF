@@ -51,7 +51,7 @@
             <Button
                 Margin="20,0,10,0"
                 Command="{Binding NavigateRegisterCommand}"
-                Content="Add new customer"
+                Content="New customer"
                 Style="{StaticResource ViewButton}" />
 
             <Button
@@ -64,7 +64,14 @@
             <Button
                 Margin="1,0"
                 Command="{Binding NavigateRentalsCommand}"
-                Content="View Rented Books"
+                Content="Rented Books"
+                Style="{StaticResource ViewButton}"
+                Visibility="{Binding IsCustomerSelected, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+            <Button
+                Margin="1,0"
+                Command="{Binding NavigateRentBookCommand}"
+                Content="Rent Book"
                 Style="{StaticResource ViewButton}"
                 Visibility="{Binding IsCustomerSelected, Converter={StaticResource BooleanToVisibilityConverter}}" />
 

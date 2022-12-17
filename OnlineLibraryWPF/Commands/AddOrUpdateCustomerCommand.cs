@@ -14,18 +14,18 @@ namespace OnlineLibraryWPF.Commands
 {
     public class AddOrUpdateCustomerCommand : AsyncCommandBase
     {
-        private readonly MongoDBService _usersService;
+        private readonly MongoDBService _mongoDBService;
         private readonly MessageStore _messageStore;
         private readonly INavigationService _closeModalNavigationService;
         private readonly RegisterViewModel _registerViewModel;
         private readonly UserStore _userStore;
-        public AddOrUpdateCustomerCommand(MongoDBService usersService, 
+        public AddOrUpdateCustomerCommand(MongoDBService mongoDBService, 
                                           UserStore userStore,
                                           MessageStore messageStore, 
                                           INavigationService closeModalNavigationService, 
                                           RegisterViewModel registerViewModel)
         {
-            _usersService = usersService;
+            _mongoDBService = mongoDBService;
             _messageStore = messageStore;
             _closeModalNavigationService = closeModalNavigationService;
             _registerViewModel = registerViewModel;
@@ -84,7 +84,7 @@ namespace OnlineLibraryWPF.Commands
                     return;
                 }
 
-                bool userExists = await _usersService.CheckUserWithLoginExists(_registerViewModel.LoginName);
+                bool userExists = await _mongoDBService.CheckUserWithLoginExists(_registerViewModel.LoginName);
                 if (userExists)
                 {
                     _messageStore.ModalMessage = "User with this login name already exists!";
@@ -98,7 +98,7 @@ namespace OnlineLibraryWPF.Commands
                                                  _registerViewModel.PID,
                                                  new Address(_registerViewModel.Street, _registerViewModel.City, _registerViewModel.PostalCode, _registerViewModel.Country),
                                                  false);
-                await _usersService.CreateUserAsync(customer);
+                await _mongoDBService.CreateUserAsync(customer);
 
                 _messageStore.Message = "User created!";
             }
@@ -120,7 +120,7 @@ namespace OnlineLibraryWPF.Commands
                 _userStore.Customer.PID = _registerViewModel.PID;
                 _userStore.Customer.Address = new Address(_registerViewModel.Street, _registerViewModel.City, _registerViewModel.PostalCode, _registerViewModel.Country);
 
-                await _usersService.UpdateUserAsync((global::MongoDB.Bson.ObjectId)_userStore.Customer.Id, customer);
+                await _mongoDBService.UpdateUserAsync((global::MongoDB.Bson.ObjectId)_userStore.Customer.Id, customer);
 
                 _messageStore.Message = "User upadated!";
             }
@@ -135,7 +135,7 @@ namespace OnlineLibraryWPF.Commands
                                                  true);
 
 
-                await _usersService.CreateUserAsync(customer);
+                await _mongoDBService.CreateUserAsync(customer);
 
                 _messageStore.Message = "User created!";
             }

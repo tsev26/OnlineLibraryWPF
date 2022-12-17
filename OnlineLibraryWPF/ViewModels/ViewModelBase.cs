@@ -16,8 +16,6 @@ namespace OnlineLibraryWPF.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public virtual string Name { get; set; }
-
         public virtual void Dispose() { }
     }
 }

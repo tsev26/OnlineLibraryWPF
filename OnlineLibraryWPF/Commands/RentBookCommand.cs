@@ -3,6 +3,7 @@ using OnlineLibraryWPF.Models;
 using OnlineLibraryWPF.MongoDB;
 using OnlineLibraryWPF.Services;
 using OnlineLibraryWPF.Stores;
+using OnlineLibraryWPF.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +32,7 @@ namespace OnlineLibraryWPF.Commands
 
         public async override Task ExecuteAsync(object? parameter)
         {
-            Book book = _userStore.Book;
+            BookViewModel book = _userStore.Book;
             User user = _userStore.Customer;
             if (user == null)
             {
@@ -43,29 +44,45 @@ namespace OnlineLibraryWPF.Commands
                 _messageStore.Message = "Select book to rent!";
                 return;
             }
-            if (_userStore.Customer.RentedBooks.Count > 6)
+
+            if (user is Customer customer && !customer.IsApproved)
             {
-                _messageStore.Message = _userStore.Customer.LoginName + " has already rented max of 6 books!";
+                _messageStore.Message = customer.LoginName + " is not approve yet!";
                 return;
             }
-            
-            foreach (var rent in _userStore.Customer.RentedBooks)
+
+            if (user is Customer cus && cus.IsBanned)
             {
-                if (rent.BookId == book.Id)
+                _messageStore.Message = cus.LoginName + " is banned!";
+                return;
+            }
+
+            if (book.AvaibleLicences <= 0)
+            {
+                _messageStore.Message = book.Title + " has no available licence!";
+                return;
+            }
+
+            List<RentalViewModel> rentedBooks = await _mongoDBService.GetRentalsCustomerAsync(_userStore.Customer.Id);
+            foreach (var rent in rentedBooks)
+            {
+                if (rent.Book.Id == book.Id)
                 {
                     _messageStore.Message = _userStore.Customer.LoginName + " have already rented this book!";
                     return;
                 }
             }
 
+            if (rentedBooks.Count >= 6)
+            {
+                _messageStore.Message = _userStore.Customer.LoginName + " has already rented max of 6 books!";
+                return;
+            }
+
             RentedBook rentedBook = new RentedBook(book.Id, user.Id, DateTime.Now);
 
             
-            await _mongoDBService.RentBook(user.Id, rentedBook);
-            _userStore.Customer.RentedBooks.Add(rentedBook);
-
-            ++book.RentedLicences;
-            await _mongoDBService.UpdateBookAsync(book.Id, book);
+            await _mongoDBService.CreateRentedBookAsync(rentedBook);
 
             _navigationService.Navigate(user.LoginName + " rents " + book.Title);
         }
