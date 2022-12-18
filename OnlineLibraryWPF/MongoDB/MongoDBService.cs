@@ -1,10 +1,12 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using OnlineLibraryWPF.Models;
 using OnlineLibraryWPF.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -208,6 +210,122 @@ namespace OnlineLibraryWPF.MongoDB
             catch (Exception e)
             {
                 throw e;
+            }
+        }
+
+
+
+
+        public async Task ExportJSONAsync(string outputFileName)
+        {
+
+            try
+            {
+                using (var streamWriter = new StreamWriter(outputFileName + "users.json"))
+                {
+                    await _usersCollection.Find(new BsonDocument())
+                        .ForEachAsync(async (document) =>
+                        {
+                            using (var stringWriter = new StringWriter())
+                            using (var jsonWriter = new JsonWriter(stringWriter))
+                            {
+                                var context = BsonSerializationContext.CreateRoot(jsonWriter);
+                                _usersCollection.DocumentSerializer.Serialize(context, document);
+                                var line = stringWriter.ToString();
+                                await streamWriter.WriteLineAsync(line);
+                            }
+                        });
+                }
+
+                using (var streamWriter = new StreamWriter(outputFileName + "books.json"))
+                {
+                    await _booksCollection.Find(new BsonDocument())
+                        .ForEachAsync(async (document) =>
+                        {
+                            using (var stringWriter = new StringWriter())
+                            using (var jsonWriter = new JsonWriter(stringWriter))
+                            {
+                                var context = BsonSerializationContext.CreateRoot(jsonWriter);
+                                _booksCollection.DocumentSerializer.Serialize(context, document);
+                                var line = stringWriter.ToString();
+                                await streamWriter.WriteLineAsync(line);
+                            }
+                        });
+                }
+
+                using (var streamWriter = new StreamWriter(outputFileName + "rentals.json"))
+                {
+                    await _rentedBooksCollection.Find(new BsonDocument())
+                        .ForEachAsync(async (document) =>
+                        {
+                            using (var stringWriter = new StringWriter())
+                            using (var jsonWriter = new JsonWriter(stringWriter))
+                            {
+                                var context = BsonSerializationContext.CreateRoot(jsonWriter);
+                                _rentedBooksCollection.DocumentSerializer.Serialize(context, document);
+                                var line = stringWriter.ToString();
+                                await streamWriter.WriteLineAsync(line);
+                            }
+                        });
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+
+        public async Task ImportJSONAsync(string inputFileName)
+        {
+            try
+            {
+                using (var streamReader = new StreamReader(inputFileName + "users.json"))
+                {
+                    string line;
+                    while ((line = await streamReader.ReadLineAsync()) != null)
+                    {
+                        using (var jsonReader = new JsonReader(line))
+                        {
+                            var context = BsonDeserializationContext.CreateRoot(jsonReader);
+                            var document = _usersCollection.DocumentSerializer.Deserialize(context);
+                            await _usersCollection.InsertOneAsync(document);
+                        }
+                    }
+                }
+
+                using (var streamReader = new StreamReader(inputFileName + "books.json"))
+                {
+                    string line;
+                    while ((line = await streamReader.ReadLineAsync()) != null)
+                    {
+                        using (var jsonReader = new JsonReader(line))
+                        {
+                            var context = BsonDeserializationContext.CreateRoot(jsonReader);
+                            var document = _booksCollection.DocumentSerializer.Deserialize(context);
+                            await _booksCollection.InsertOneAsync(document);
+                        }
+                    }
+                }
+
+                using (var streamReader = new StreamReader(inputFileName + "rentals.json"))
+                {
+                    string line;
+                    while ((line = await streamReader.ReadLineAsync()) != null)
+                    {
+                        using (var jsonReader = new JsonReader(line))
+                        {
+                            var context = BsonDeserializationContext.CreateRoot(jsonReader);
+                            var document = _rentedBooksCollection.DocumentSerializer.Deserialize(context);
+                            await _rentedBooksCollection.InsertOneAsync(document);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
             }
         }
     }

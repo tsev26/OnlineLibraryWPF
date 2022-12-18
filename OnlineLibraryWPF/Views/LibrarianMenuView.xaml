@@ -59,10 +59,12 @@
             <Button
                 Grid.Row="3"
                 Margin="10,40,10,10"
+                Command="{Binding ExportCommand}"
                 Content="Export"
                 Style="{StaticResource ViewButton}" />
             <Button
                 Grid.Row="4"
+                Command="{Binding ImportCommand}"
                 Content="Import"
                 Style="{StaticResource ViewButton}" />
             <Button

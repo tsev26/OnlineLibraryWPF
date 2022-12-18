@@ -37,8 +37,8 @@ namespace OnlineLibraryWPF.ViewModels
             NavigateBooksCommand = new NavigateCommand(navigateBooksCommand);
             NavigateRentalsCommand = new NavigateCommand(navigateRentalsCommand);
             LoadInfoAbouCustomersCommand = new LoadInfoAbouCustomersCommand(mongoDBService, messageStore);
-            ExportCommand = new ExportCommand();
-            ImportCommand = new ImportCommand();
+            ExportCommand = new ExportCommand(mongoDBService, messageStore);
+            ImportCommand = new ImportCommand(mongoDBService, messageStore);
 
             MessageStore.MessageChanged += MessageStore_MessageChanged;
         }
